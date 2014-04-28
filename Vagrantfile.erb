@@ -1,0 +1,33 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.box = "digital_ocean"
+
+  config.ssh.private_key_path = "~/.ssh/id_rsa"
+
+  # this allows the vagrant box to use the private keys on the host computer
+  config.ssh.forward_agent = true
+
+  config.vm.provider :digital_ocean do |provider|
+    provider.client_id = "<%= ENV['DIGITAL_OCEAN_CLIENT_ID'] %>"
+    provider.api_key = "<%= ENV['DIGITAL_OCEAN_API_KEY'] %>"
+    provider.image = "Dokku v0.2.3 on Ubuntu 14.04"
+    provider.private_networking = true
+    provider.backups_enabled = true
+    provider.region = "<%= ENV['DIGITAL_OCEAN_REGION'] %>"
+    provider.size = "<%= ENV['SIZE'] %>"
+  end
+
+  # sets the name of the droplet
+  config.vm.define "<%= ENV['DNS'] %>" do |t|
+  end
+
+  # Set up provisioning
+  config.vm.provision "shell", :path => "../../provision.sh"
+
+end
