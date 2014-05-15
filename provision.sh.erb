@@ -19,6 +19,5 @@ service rsyslog restart
 killall remote_syslog
 remote_syslog -p $PAPERTRAIL_PORT -d logs.papertrailapp.com /var/log/nginx/access.log /var/log/nginx/error.log
 
-# todo
 
 cd /root
