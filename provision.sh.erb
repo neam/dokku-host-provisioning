@@ -8,6 +8,15 @@ cd provisioning
 
 apt-get update
 
+# add extra swap to make dokku more stable in oom situations (https://github.com/dotcloud/docker/issues/1555)
+
+if [ ! -f "/var/swap.1" ]; then
+    sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=4096
+    sudo /sbin/mkswap /var/swap.1
+    sudo /sbin/swapon /var/swap.1
+    echo '/var/swap.1 swap swap defaults 0 0' > /etc/fstab
+fi
+
 # install htop
 
 apt-get install -y -q htop
