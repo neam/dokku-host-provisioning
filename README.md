@@ -12,6 +12,7 @@ Some general configuration variables are necessary for the configurations before
     export DIGITAL_OCEAN_CLIENT_ID="replaceme"
     export DIGITAL_OCEAN_API_KEY="replaceme"
     export DIGITAL_OCEAN_REGION="Amsterdam 2"
+    export PAPERTRAIL_PORT="12345"
 
 Set configuration that depends on DNS and performance requirements (Note: Dokku needs wildcard subdomain registration to be able to map virtual hosts based on sub-domains):
 
@@ -31,6 +32,7 @@ To provision a dokku-enabled instance running in digital ocean:
     mkdir -p build/$DNS
     cd build/$DNS
     erb ../../Vagrantfile.erb > Vagrantfile
+    erb ../../provision.sh.erb > provision.sh
     vagrant up --provider=digital_ocean
 
 To enter the virtual machine:
