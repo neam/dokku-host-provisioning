@@ -1,14 +1,16 @@
 #!/bin/bash
 
+# usage: ./limit-dokku-deployments.sh 3 "project1 project2 project3 project4"
+
 set -x
 
 # config
 
-LIMIT=3
+LIMIT=$1
 
 # logic
 
-for PROJECT in cms vizabi go proxy
+for PROJECT in $2
 do
 
     RUNNING=`docker ps | grep "\-$PROJECT\-" | wc | awk '{ print $1 }'`
