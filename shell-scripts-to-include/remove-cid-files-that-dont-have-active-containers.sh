@@ -2,7 +2,7 @@
 
 set -x
 
-# make sure that all dokku container files are valid
+# make sure that all dokku container files contain ids to running docker containers
 for FILE in `ls /home/dokku/*/CONTAINER`
 do
   ID=`cat $FILE`

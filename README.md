@@ -38,3 +38,9 @@ To provision a dokku-enabled instance running in digital ocean:
 To enter the virtual machine:
 
     vagrant ssh
+
+## Shell scripts
+
+docker-enter.sh - Uses nsenter to step into a running container
+remove-cid-files-that-dont-have-active-containers.sh - Makes sure that all dokku container files contain ids to running docker containerslimit-dokku-deployments.sh - Use to limit commit-specific deployments
+limit-dokku-deployments.sh - Use to limit commit-specific deployments
