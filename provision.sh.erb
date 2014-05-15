@@ -19,5 +19,17 @@ service rsyslog restart
 killall remote_syslog
 remote_syslog -p $PAPERTRAIL_PORT -d logs.papertrailapp.com /var/log/nginx/access.log /var/log/nginx/error.log
 
+# nsenter
+
+if [ ! -f /usr/local/bin/nsenter ]; then
+    cd /tmp
+    curl https://www.kernel.org/pub/linux/utils/util-linux/v2.24/util-linux-2.24.tar.gz \
+         | tar -zxf-
+    cd util-linux-2.24
+    ./configure --without-ncurses
+    make nsenter
+    cp nsenter /usr/local/bin/
+fi
+
 
 cd /root
