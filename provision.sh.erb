@@ -8,6 +8,10 @@ cd provisioning
 
 apt-get update
 
+# install htop
+
+apt-get install -y -q htop
+
 # papertrail for the dokku rsyslog and vhost proxy
 
 export PAPERTRAIL_PORT=<%= ENV['PAPERTRAIL_PORT'] %>
