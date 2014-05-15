@@ -10,11 +10,13 @@ apt-get update
 
 # papertrail for the dokku rsyslog and vhost proxy
 
-export PAPERTRAIL_PORT=<%= ENV['DIGITAL_OCEAN_CLIENT_ID'] %>
-apt-get install -y -q ruby1.9.1-dev
+export PAPERTRAIL_PORT=<%= ENV['PAPERTRAIL_PORT'] %>
+apt-get install -y -q ruby1.9.1-dev build-essential
 gem install remote_syslog
+echo '$PreserveFQDN on' > /etc/rsyslog.d/00-preserve-fqdn.conf
 echo "*.*          @logs.papertrailapp.com:$PAPERTRAIL_PORT" > /etc/rsyslog.d/999-papertrail.conf
 service rsyslog restart
+killall remote_syslog
 remote_syslog -p $PAPERTRAIL_PORT -d logs.papertrailapp.com /var/log/nginx/access.log /var/log/nginx/error.log
 
 # todo
