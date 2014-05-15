@@ -31,5 +31,9 @@ if [ ! -f /usr/local/bin/nsenter ]; then
     cp nsenter /usr/local/bin/
 fi
 
+# install shell-scripts in /usr/local/bin
+
+cp /vagrant/shell-scripts-to-include/* /usr/local/bin/
+
 
 cd /root

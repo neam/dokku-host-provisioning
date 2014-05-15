@@ -33,6 +33,7 @@ To provision a dokku-enabled instance running in digital ocean:
     cd build/$DNS
     erb ../../Vagrantfile.erb > Vagrantfile
     erb ../../provision.sh.erb > provision.sh
+    cp -r ../../shell-scripts-to-include shell-scripts-to-include
     vagrant up --provider=digital_ocean
 
 To enter the virtual machine:
