@@ -35,5 +35,53 @@ fi
 
 cp /vagrant/shell-scripts-to-include/* /usr/local/bin/
 
+# update dokku to a pinned down revision of master branch and docker that we have tested
+
+apt-get install -y -q git
+cd /root/dokku/
+git checkout master
+git checkout 42fee25f2f3d3337080cd0001c094c1a4824495c
+DOCKER_VERSION=0.11.1 make install
+
+# skip GUI install - install by script
+if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
+    echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
+    echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
+    cat /root/.ssh/authorized_keys | head -n 1 | sshcommand acl-add dokku admin
+    rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start
+    rm /etc/init/dokku-installer.conf && stop dokku-installer
+fi
+
+# install relevant dokku plugins - pinned down to known revisions
+
+cd /var/lib/dokku/plugins
+
+if [ ! -f "docker-options" ]; then
+    git clone https://github.com/dyson/dokku-docker-options.git docker-options
+fi
+cd docker-options
+git checkout f2f9504d40e99e4ca344f9a7612529dc8a55b48c
+
+if [ ! -f "rebuild" ]; then
+    git clone https://github.com/scottatron/dokku-rebuild rebuild
+fi
+cd rebuild
+git checkout c58cbecaa85133538aa7747073f0d82ba4834ac4
+
+if [ ! -f "user-env-compile" ]; then
+    git clone https://github.com/musicglue/dokku-user-env-compile.git user-env-compile
+fi
+cd user-env-compile
+git checkout 447dba7ff0a274d5456ee128fc7cef97bbd7bfa9
+
+if [ ! -f "mariadb" ]; then
+    git clone https://github.com/Kloadut/dokku-md-plugin mariadb
+fi
+cd mariadb
+git checkout 440e70400928bcf7c4f681fb16536d52da9062d4
+
+dokku plugins-install
+
+# done
 
 cd /root
