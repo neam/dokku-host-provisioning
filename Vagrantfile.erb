@@ -24,7 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # sets the name of the droplet
-  config.vm.define "<%= ENV['DNS'] %>" do |t|
+  config.vm.define "<%= ENV['HOSTNAME'] %>" do |t|
   end
 
   # Set up provisioning
