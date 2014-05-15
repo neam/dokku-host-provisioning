@@ -54,26 +54,29 @@ fi
 
 # install relevant dokku plugins - pinned down to known revisions
 
-cd /var/lib/dokku/plugins
 
+cd /var/lib/dokku/plugins
 if [ ! -f "docker-options" ]; then
     git clone https://github.com/dyson/dokku-docker-options.git docker-options
 fi
 cd docker-options
 git checkout f2f9504d40e99e4ca344f9a7612529dc8a55b48c
 
+cd /var/lib/dokku/plugins
 if [ ! -f "rebuild" ]; then
     git clone https://github.com/scottatron/dokku-rebuild rebuild
 fi
 cd rebuild
 git checkout c58cbecaa85133538aa7747073f0d82ba4834ac4
 
+cd /var/lib/dokku/plugins
 if [ ! -f "user-env-compile" ]; then
     git clone https://github.com/musicglue/dokku-user-env-compile.git user-env-compile
 fi
 cd user-env-compile
 git checkout 447dba7ff0a274d5456ee128fc7cef97bbd7bfa9
 
+cd /var/lib/dokku/plugins
 if [ ! -f "mariadb" ]; then
     git clone https://github.com/Kloadut/dokku-md-plugin mariadb
 fi
