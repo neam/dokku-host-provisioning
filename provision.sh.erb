@@ -17,9 +17,9 @@ if [ ! -f "/var/swap.1" ]; then
     echo '/var/swap.1 swap swap defaults 0 0' > /etc/fstab
 fi
 
-# install htop
+# install htop and mosh
 
-apt-get install -y -q htop
+apt-get install -y -q htop mosh
 
 # papertrail for the dokku rsyslog and vhost proxy
 
