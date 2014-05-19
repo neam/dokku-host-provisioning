@@ -75,6 +75,7 @@ if [ ! -d "docker-options" ]; then
     git clone https://github.com/dyson/dokku-docker-options.git docker-options
 fi
 cd docker-options
+git fetch
 git checkout f2f9504d40e99e4ca344f9a7612529dc8a55b48c
 
 cd /var/lib/dokku/plugins
@@ -82,6 +83,7 @@ if [ ! -d "rebuild" ]; then
     git clone https://github.com/scottatron/dokku-rebuild rebuild
 fi
 cd rebuild
+git fetch
 git checkout c58cbecaa85133538aa7747073f0d82ba4834ac4
 
 cd /var/lib/dokku/plugins
@@ -89,6 +91,7 @@ if [ ! -d "user-env-compile" ]; then
     git clone https://github.com/musicglue/dokku-user-env-compile.git user-env-compile
 fi
 cd user-env-compile
+git fetch
 git checkout 447dba7ff0a274d5456ee128fc7cef97bbd7bfa9
 
 cd /var/lib/dokku/plugins
@@ -96,6 +99,7 @@ if [ ! -d "mariadb" ]; then
     git clone https://github.com/Kloadut/dokku-md-plugin mariadb
 fi
 cd mariadb
+git fetch
 git checkout 440e70400928bcf7c4f681fb16536d52da9062d4
 
 cd /var/lib/dokku/plugins
@@ -103,6 +107,7 @@ if [ ! -d "domains-plugin" ]; then
     git clone https://github.com/neam/dokku-domains-plugin.git domains-plugin
 fi
 cd domains-plugin
+git fetch
 git checkout 5d96121b2b4e42f0bd9f2e60814b080c9eae44f5 # feature/update-existing-nginx.conf
 
 cd /var/lib/dokku/plugins
@@ -110,6 +115,7 @@ if [ ! -d "nginx-vhosts-custom-configuration" ]; then
     git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
 fi
 cd nginx-vhosts-custom-configuration
+git fetch
 git checkout d12ab715306ba7f3694fb68ce7aec2e64971e6dc
 
 dokku plugins-install
