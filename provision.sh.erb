@@ -99,6 +99,13 @@ cd mariadb
 git checkout 440e70400928bcf7c4f681fb16536d52da9062d4
 
 cd /var/lib/dokku/plugins
+if [ ! -d "domains-plugin" ]; then
+    git clone https://github.com/neam/dokku-domains-plugin.git domains-plugin
+fi
+cd domains-plugin
+git checkout 5d96121b2b4e42f0bd9f2e60814b080c9eae44f5 # feature/update-existing-nginx.conf
+
+cd /var/lib/dokku/plugins
 if [ ! -d "nginx-vhosts-custom-configuration" ]; then
     git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
 fi
