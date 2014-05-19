@@ -98,10 +98,9 @@ git checkout 440e70400928bcf7c4f681fb16536d52da9062d4
 
 dokku plugins-install
 
-# update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
+# configure nginx to support longer than 46 character hostnames (default value 64 which equals 46 chars)
 
-sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
-cat /etc/nginx/nginx.conf | grep server
+echo 'server_names_hash_bucket_size 128;' > /etc/nginx/conf.d/support-long-hostnames.conf
 
 # done
 
