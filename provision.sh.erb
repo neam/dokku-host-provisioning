@@ -102,6 +102,10 @@ dokku plugins-install
 
 echo 'server_names_hash_bucket_size 128;' > /etc/nginx/conf.d/support-long-hostnames.conf
 
+# add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
+
+echo 'export DOKKU_TRACE=0' > /home/dokku/dokkurc
+
 # done
 
 cd /root
