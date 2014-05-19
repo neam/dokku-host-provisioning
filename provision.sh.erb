@@ -54,7 +54,9 @@ cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
 apt-get install -y -q git
 cd /root/dokku/
 git checkout master
-git checkout 42fee25f2f3d3337080cd0001c094c1a4824495c
+git remote add neam https://github.com/neam/dokku.git
+git fetch neam
+git checkout 3537c90cfe219a45fd701c99aced6a70e97c42c3 # include-nginx-conf.d (#579)
 DOCKER_VERSION=0.11.1 make install
 
 # skip GUI install - install by script
@@ -95,6 +97,13 @@ if [ ! -d "mariadb" ]; then
 fi
 cd mariadb
 git checkout 440e70400928bcf7c4f681fb16536d52da9062d4
+
+cd /var/lib/dokku/plugins
+if [ ! -d "nginx-vhosts-custom-configuration" ]; then
+    git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
+fi
+cd nginx-vhosts-custom-configuration
+git checkout 5f781d16b0c3ca748395993ba856433df9371c68
 
 dokku plugins-install
 
