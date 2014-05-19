@@ -120,9 +120,10 @@ git checkout f5a341299c91ef86fe4ce08cac97bc5f9b291af8
 
 dokku plugins-install
 
-# configure nginx to support longer than 46 character hostnames (default value 64 which equals 46 chars)
+# update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
 
-echo 'server_names_hash_bucket_size 128;' > /etc/nginx/conf.d/support-long-hostnames.conf
+sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
+cat /etc/nginx/nginx.conf | grep server
 
 # add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
 
