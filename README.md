@@ -48,6 +48,23 @@ To enter the virtual machine:
 
     vagrant ssh
 
+## Setting the default vhost
+
+Push an app to your dokku host with a name like "00-default". As long as it lists first in `ls /home/dokku/*/nginx.conf | head`, it will be used as the default nginx vhost.
+
+Example:
+
+```bash
+mkdir /tmp/00-default-app
+cd /tmp/00-default-app
+git flow init --defaults
+echo "Hello world" > index.php
+git add index.php
+git commit -m "Added hello world index page"
+export APPNAME=00-default
+git push dokku@$HOSTNAME:$APPNAME develop:master
+```
+
 ## Shell scripts
 
 docker-enter.sh - Uses nsenter to step into a running container
