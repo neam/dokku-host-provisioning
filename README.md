@@ -34,7 +34,7 @@ To provision a dokku-enabled instance running in digital ocean:
     cd build/$HOSTNAME
     erb ../../Vagrantfile.erb > Vagrantfile
     erb ../../provision.sh.erb > provision.sh
-    cp -r ../../shell-scripts-to-include shell-scripts-to-include
+    cp -r ../../shell-scripts-to-include/ shell-scripts-to-include/
 
 First time, run:
 
