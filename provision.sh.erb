@@ -3,7 +3,12 @@
 set -x
 
 cd /root
-mkdir provisioning
+
+# in order to prevent accidental overwrites of /root contents, we cd into our own directory where we perform the provisioning
+
+if [ ! -d provisioning ]; then
+    mkdir provisioning
+fi
 cd provisioning
 
 apt-get update
