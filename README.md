@@ -67,6 +67,8 @@ git push dokku@$HOSTNAME:$APPNAME develop:master
 
 ## Shell scripts
 
-docker-enter.sh - Uses nsenter to step into a running container
-remove-cid-files-that-dont-have-active-containers.sh - Makes sure that all dokku container files contain ids to running docker containerslimit-dokku-deployments.sh - Use to limit commit-specific deployments
-limit-dokku-deployments.sh - Use to limit commit-specific deployments
+The following shell scripts are available in /usr/local/bin on the dokku hosts, and may be useful:
+
+* docker-enter.sh - Uses nsenter to step into a running container
+* remove-cid-files-that-dont-have-active-containers.sh - Makes sure that all dokku container files contain ids to running docker containers
+* limit-dokku-deployments.sh - Use to limit commit-specific deployments
