@@ -17,17 +17,18 @@ GREPARGS=${@:2}
 
 # logic
 
-RUNNING=`docker ps | grep $GREPARGS | wc | awk '{ print $1 }'`
+RUNNING=`docker images | grep 'dokku/' | grep "$GREPARGS" | wc | awk '{ print $1 }'`
 let KILL=RUNNING-LIMIT
 
-echo "$RUNNING containers matching regex \"$GREPARGS\""
-docker ps | grep $GREPARGS
+echo "$RUNNING docker images matching regex \"$GREPARGS\""
+docker images | grep 'dokku/' | grep "$GREPARGS"
 echo
 
 if [ "$KILL" -gt 0 ] ; then
 
-    # kill all but the LIMIT newest deployments within each project
-    docker ps | grep $GREPARGS | awk '{ print $1 }' | tail -n "$KILL" | xargs docker kill
+    # remove all but the LIMIT newest deployments
+    docker ps | grep 'dokku/' | grep "$GREPARGS" | awk '{ print $1 }' | tail -n "$KILL" | xargs docker rm -f
+    docker images | grep 'dokku/' | grep "$GREPARGS" | awk '{ print $1 }' | tail -n "$KILL" | sed 's/dokku\///' | xargs delete-dokku-apps.sh
 
     # perform necessary clean-up for the apps be able to rebuild
     `dirname $0`/remove-cid-files-that-dont-have-active-containers.sh
