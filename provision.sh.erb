@@ -62,7 +62,7 @@ git checkout master
 git remote add neam https://github.com/neam/dokku.git
 git fetch neam
 git checkout 3537c90cfe219a45fd701c99aced6a70e97c42c3 # include-nginx-conf.d (#579)
-DOCKER_VERSION=0.11.1 make install
+DOCKER_VERSION=1.0.1 make install
 
 # skip GUI install - install by script
 if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
