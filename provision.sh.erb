@@ -129,6 +129,7 @@ dokku plugins-install
 
 sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
 cat /etc/nginx/nginx.conf | grep server
+/etc/init.d/nginx restart
 
 # add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
 
