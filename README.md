@@ -13,6 +13,7 @@ Some general configuration variables are necessary for the configurations before
     export DIGITAL_OCEAN_API_KEY="replaceme"
     export DIGITAL_OCEAN_REGION="Amsterdam 2"
     export PAPERTRAIL_PORT="12345"
+    export NEW_RELIC_LICENSE_KEY="replaceme"
 
 Set configuration that depends on DNS and performance requirements (Note: Dokku needs wildcard subdomain registration to be able to map virtual hosts based on sub-domains):
 

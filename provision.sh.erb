@@ -11,7 +11,19 @@ if [ ! -d provisioning ]; then
 fi
 cd provisioning
 
-apt-get update
+# not necessary here since it is done when provisioning newrelic below - activate if newrelic provisioning step is removed
+#apt-get update
+
+# newrelic
+
+wget -O - http://download.newrelic.com/548C16BF.gpg | sudo apt-key add -
+sudo sh -c 'echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list'
+sudo apt-get update
+apt-get install -y -q newrelic-sysmond
+nrsysmond-config --set license_key=<%= ENV['NEW_RELIC_LICENSE_KEY'] %>
+nrsysmond-config --set loglevel=warning
+nrsysmond-config --set loglevel=warning
+/etc/init.d/newrelic-sysmond start
 
 # add extra swap to make dokku more stable in oom situations (https://github.com/dotcloud/docker/issues/1555)
 
@@ -36,7 +48,7 @@ echo "\$LocalHostName $HOSTNAME" > /etc/rsyslog.d/00-fixed-hostname.conf
 echo "*.*          @logs.papertrailapp.com:$PAPERTRAIL_PORT" > /etc/rsyslog.d/999-papertrail.conf
 service rsyslog restart
 killall remote_syslog
-remote_syslog -p $PAPERTRAIL_PORT --hostname $HOSTNAME -d logs.papertrailapp.com /var/log/nginx/access.log /var/log/nginx/error.log
+remote_syslog -p $PAPERTRAIL_PORT --hostname $HOSTNAME -d logs.papertrailapp.com /var/log/nginx/access.log /var/log/nginx/error.log /var/log/newrelic/nrsysmond.log
 
 # nsenter
 
