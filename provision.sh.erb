@@ -80,6 +80,14 @@ git fetch neam
 git checkout 3537c90cfe219a45fd701c99aced6a70e97c42c3 # include-nginx-conf.d (#579)
 DOCKER_VERSION=1.0.1 make install
 
+# pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
+
+rm -r /tmp/buildstep
+git clone https://github.com/progrium/buildstep.git /tmp/buildstep
+cd /tmp/buildstep
+git checkout 90aa814665815ddcbd72d0a8ace01be2978aa11a
+sudo make build
+
 # skip GUI install - install by script
 if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
     echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
