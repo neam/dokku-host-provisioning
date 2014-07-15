@@ -11,6 +11,10 @@ if [ ! -d provisioning ]; then
 fi
 cd provisioning
 
+# make the bash prompt show the fqdn of the current host in order to prevent confusion of where commands are run
+echo 'export PS1="${PS1/\\h/\\H}"' >> ~/.bashrc
+echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to replace' >> ~/.bashrc
+
 # not necessary here since it is done when provisioning newrelic below - activate if newrelic provisioning step is removed
 #apt-get update
 
