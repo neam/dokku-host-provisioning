@@ -1,0 +1,3 @@
+[submodule "vendor/dokku-md-plugin"]
+	path = vendor/dokku-md-plugin
+	url = https://github.com/motin/dokku-md-plugin.git

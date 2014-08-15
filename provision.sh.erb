@@ -78,7 +78,7 @@ git checkout master
 git remote add neam https://github.com/neam/dokku.git
 git fetch neam
 git checkout 3537c90cfe219a45fd701c99aced6a70e97c42c3 # include-nginx-conf.d (#579)
-DOCKER_VERSION=1.0.1 make install
+DOCKER_VERSION=1.1.2 make install
 
 # pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
 
@@ -125,11 +125,13 @@ git checkout 447dba7ff0a274d5456ee128fc7cef97bbd7bfa9
 
 cd /var/lib/dokku/plugins
 if [ ! -d "mariadb" ]; then
-    git clone https://github.com/Kloadut/dokku-md-plugin mariadb
+    git clone --recursive https://github.com/motin/dokku-md-plugin mariadb
 fi
 cd mariadb
 git fetch
-git checkout 440e70400928bcf7c4f681fb16536d52da9062d4
+git checkout 643d21369d372c2c9a11d752406acdd44492df54 # awaiting-prs
+git submodule sync
+git submodule update
 
 cd /var/lib/dokku/plugins
 if [ ! -d "domains-plugin" ]; then
