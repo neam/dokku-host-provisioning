@@ -26,4 +26,10 @@ do
         rm -r /home/dokku/$APPNAME
     fi
 
+    # move remains from mariadb to a trash folder for inspection before they are deleted
+    set +o errexit
+    mkdir /home/dokku/.mariadb-trash
+    mv /home/dokku/.mariadb/*$APPNAME /home/dokku/.mariadb-trash/
+    set -o errexit
+
 done
