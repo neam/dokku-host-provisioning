@@ -6,6 +6,8 @@
 # Use to kill off older dokku apps so that resourced can be freed up
 # Useful in the case that your CI is automatically adding new commit-specific deployments
 
+# Note: Error handling is inadequate - when there are no dokku apps at all or none matching the regexes, cryptic error messages will be shown
+
 # Example: ./limit-dokku-apps.sh 3 'develop' 'foo'
 
 set -x
@@ -18,6 +20,10 @@ set -o errexit
 LIMIT=$1
 GREPARGS=$2
 GREPARGS_EXCLUDE=$3
+
+if [ "$GREPARGS" == "" ]; then
+    GREPARGS_EXCLUDE="dontincludeanythingzxcvasdfqwer"
+fi
 
 if [ "$GREPARGS_EXCLUDE" == "" ]; then
     GREPARGS_EXCLUDE="dontexcludeanythingzxcvasdfqwer"
