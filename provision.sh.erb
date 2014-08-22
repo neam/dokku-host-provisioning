@@ -129,7 +129,7 @@ if [ ! -d "mariadb" ]; then
 fi
 cd mariadb
 git fetch
-git checkout 643d21369d372c2c9a11d752406acdd44492df54 # awaiting-prs
+git checkout 02986d915e8e11e398c5eccbb4893e7ba92ff6db # awaiting-prs
 git submodule sync
 git submodule update
 
@@ -146,8 +146,7 @@ if [ ! -d "nginx-vhosts-custom-configuration" ]; then
     git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
 fi
 cd nginx-vhosts-custom-configuration
-git fetch
-git checkout cd65abd75735152d1d3d3c0f1d385c69eeb36f76
+git checkout ecaaf40c2155fc80d297a19bf63e23748b581ec2
 
 dokku plugins-install
 

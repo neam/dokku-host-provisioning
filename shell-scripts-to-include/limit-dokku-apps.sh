@@ -44,13 +44,8 @@ if [ "$KILL" -gt 0 ] ; then
     # remove all but the LIMIT newest apps
     ls -dt */ | grep "$GREPARGS" | grep -v "$GREPARGS_EXCLUDE" | awk '{ print $1 }' | tail -n "$KILL" | sed 's/\///' | xargs delete-dokku-apps.sh
 
-    # perform necessary clean-up for the apps be able to rebuild
-    #`dirname $0`/remove-cid-files-that-dont-have-active-containers.sh
-
     # remove phantom docker images and containers
-    docker ps | grep -v mariadb | grep -v progrium | grep -v ubuntu | grep -v CONTAINER | awk '{ print $1 }' | xargs docker rm -f
-    docker ps -a | grep Exited | grep -v CONTAINER | awk '{ print $1 }' | xargs docker rm -f
-    docker images | grep '<none>' | awk '{ print $3 }' | xargs docker rmi -f
+    remove-phantom-docker-images-and-containers.sh
 
 fi
 
