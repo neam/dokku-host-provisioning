@@ -9,8 +9,7 @@ To use the vagrant configurations, you need the vagrant digital ocean plugin:
 
 Some general configuration variables are necessary for the configurations before provisioning the instances:
 
-    export DIGITAL_OCEAN_CLIENT_ID="replaceme"
-    export DIGITAL_OCEAN_API_KEY="replaceme"
+    export DIGITAL_OCEAN_TOKEN="replaceme"
     export DIGITAL_OCEAN_REGION="Amsterdam 2"
     export PAPERTRAIL_PORT="12345"
     export NEW_RELIC_LICENSE_KEY="replaceme"
