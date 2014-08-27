@@ -128,6 +128,7 @@ if [ ! -d "mariadb" ]; then
     git clone --recursive https://github.com/motin/dokku-md-plugin mariadb
 fi
 cd mariadb
+git remote set-url origin https://github.com/motin/dokku-md-plugin
 git fetch
 git checkout 02986d915e8e11e398c5eccbb4893e7ba92ff6db # awaiting-prs
 git submodule sync
