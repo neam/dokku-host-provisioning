@@ -146,6 +146,7 @@ if [ ! -d "nginx-vhosts-custom-configuration" ]; then
     git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
 fi
 cd nginx-vhosts-custom-configuration
+git fetch
 git checkout ecaaf40c2155fc80d297a19bf63e23748b581ec2
 
 dokku plugins-install
