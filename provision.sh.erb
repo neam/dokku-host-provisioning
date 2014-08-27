@@ -79,6 +79,7 @@ git remote add neam https://github.com/neam/dokku.git
 git fetch neam
 git checkout 6bf80002f8d5e5b1345081790480c434b7bcb069 # awaiting-prs [include-nginx-conf.d (#579), create-command (#599)]
 DOCKER_VERSION=1.1.2 make install
+service docker restart
 
 # pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
 
