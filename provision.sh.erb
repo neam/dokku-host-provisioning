@@ -149,6 +149,7 @@ if [ ! -d "nginx-vhosts-custom-configuration" ]; then
     git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
 fi
 cd nginx-vhosts-custom-configuration
+git remote set-url origin https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git
 git fetch
 git checkout 51f71ad9c4c34cf81bc5873a19e5d7d267420e42
 
