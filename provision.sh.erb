@@ -66,6 +66,12 @@ if [ ! -f /usr/local/bin/nsenter ]; then
     cp nsenter /usr/local/bin/
 fi
 
+# install and start mailcatcher on the dokku instance
+
+docker pull nisenabe/mailcatcher
+docker ps -a | grep 'nisenabe/mailcatcher' | awk '{ print $1 }' | xargs docker rm -f
+docker run -d -p 1080:1080 -p 1025:1025 nisenabe/mailcatcher mailcatcher -f --verbose --ip 0.0.0.0 --smtp-port 1025 --http-port 1080
+
 # install shell-scripts in /usr/local/bin
 
 cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
