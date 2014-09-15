@@ -58,9 +58,9 @@ Example:
 mkdir /tmp/00-default-app
 cd /tmp/00-default-app
 git flow init --defaults
-echo "Hello world" > index.php
+echo "This dokku-deployment does not exist" > index.php
 git add index.php
-git commit -m "Added hello world index page"
+git commit -m "Added index page"
 export APPNAME=00-default
 git push dokku@$HOSTNAME:$APPNAME develop:master
 ```
