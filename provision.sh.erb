@@ -137,7 +137,7 @@ fi
 cd mariadb
 git remote set-url origin https://github.com/motin/dokku-md-plugin
 git fetch
-git checkout 02986d915e8e11e398c5eccbb4893e7ba92ff6db # awaiting-prs
+git checkout <%= ENV['DOKKU_MD_PLUGIN_REV'] %>
 git submodule init
 git submodule sync
 git submodule update
