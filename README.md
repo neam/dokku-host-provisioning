@@ -37,7 +37,7 @@ To provision a dokku-enabled instance running in digital ocean:
 First time, run:
 
     git submodule init
-    git submodule update
+    git submodule update --recursive
     vagrant up --provider=digital_ocean
 
 With an already running droplet:

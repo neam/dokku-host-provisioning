@@ -131,16 +131,8 @@ git fetch
 git checkout 447dba7ff0a274d5456ee128fc7cef97bbd7bfa9
 
 cd /var/lib/dokku/plugins
-if [ ! -d "mariadb" ]; then
-    git clone --recursive https://github.com/motin/dokku-md-plugin mariadb
-fi
-cd mariadb
-git remote set-url origin https://github.com/motin/dokku-md-plugin
-git fetch
-git checkout <%= ENV['DOKKU_MD_PLUGIN_REV'] %>
-git submodule init
-git submodule sync
-git submodule update
+rm -r mariadb
+cp -r /vagrant/vendor/dokku-md-plugin mariadb
 
 cd /var/lib/dokku/plugins
 if [ ! -d "domains-plugin" ]; then
