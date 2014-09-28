@@ -32,9 +32,7 @@ To provision a dokku-enabled instance running in digital ocean:
     cd vagrant/dokku/
     mkdir -p build/$HOSTNAME
     cd build/$HOSTNAME
-    erb ../../Vagrantfile.erb > Vagrantfile
-    erb ../../provision.sh.erb > provision.sh
-    cp -r ../../shell-scripts-to-include/ shell-scripts-to-include/
+    ../../build-vagrant-config.sh
 
 First time, run:
 
