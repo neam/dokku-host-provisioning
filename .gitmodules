@@ -8,9 +8,6 @@
 [submodule "vendor/dokku-plugins/docker-options"]
 	path = vendor/dokku-plugins/docker-options
 	url = https://github.com/dyson/dokku-docker-options.git
-[submodule "vendor/dokku-plugins/rebuild"]
-	path = vendor/dokku-plugins/rebuild
-	url = https://github.com/scottatron/dokku-rebuild
 [submodule "vendor/dokku-plugins/user-env-compile"]
 	path = vendor/dokku-plugins/user-env-compile
 	url = https://github.com/musicglue/dokku-user-env-compile.git
