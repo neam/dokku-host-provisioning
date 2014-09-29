@@ -81,7 +81,6 @@ cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
 
 # update dokku to a pinned down revision of master branch and docker that we have tested
 
-apt-get install -y -q git
 rm -r /root/dokku/
 cp -r /vagrant/vendor/dokku /root/dokku
 cd /root/dokku/
