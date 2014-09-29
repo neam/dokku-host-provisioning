@@ -5,21 +5,21 @@
 [submodule "vendor/buildstep"]
 	path = vendor/buildstep
 	url = https://github.com/progrium/buildstep.git
-[submodule "vendor/docker-options"]
-	path = vendor/docker-options
+[submodule "vendor/dokku-plugins/docker-options"]
+	path = vendor/dokku-plugins/docker-options
 	url = https://github.com/dyson/dokku-docker-options.git
-[submodule "vendor/rebuild"]
-	path = vendor/rebuild
+[submodule "vendor/dokku-plugins/rebuild"]
+	path = vendor/dokku-plugins/rebuild
 	url = https://github.com/scottatron/dokku-rebuild
-[submodule "vendor/user-env-compile"]
-	path = vendor/user-env-compile
+[submodule "vendor/dokku-plugins/user-env-compile"]
+	path = vendor/dokku-plugins/user-env-compile
 	url = https://github.com/musicglue/dokku-user-env-compile.git
-[submodule "vendor/mariadb"]
-	path = vendor/mariadb
+[submodule "vendor/dokku-plugins/mariadb"]
+	path = vendor/dokku-plugins/mariadb
 	url = https://github.com/motin/dokku-md-plugin.git
-[submodule "vendor/custom-domains"]
-	path = vendor/custom-domains
+[submodule "vendor/dokku-plugins/custom-domains"]
+	path = vendor/dokku-plugins/custom-domains
 	url = https://github.com/neam/dokku-custom-domains.git
-[submodule "vendor/nginx-vhosts-custom-configuration"]
-	path = vendor/nginx-vhosts-custom-configuration
+[submodule "vendor/dokku-plugins/nginx-vhosts-custom-configuration"]
+	path = vendor/dokku-plugins/nginx-vhosts-custom-configuration
 	url = https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git

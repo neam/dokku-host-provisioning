@@ -101,30 +101,10 @@ if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
     rm /etc/init/dokku-installer.conf && stop dokku-installer
 fi
 
-# install relevant dokku plugins - pinned down to known revisions
+# install dokku plugins
 
-rm -r docker-options
-cp -r /vagrant/vendor/docker-options docker-options
-
-rm -r rebuild
-cp -r /vagrant/vendor/rebuild rebuild
-
-rm -r user-env-compile
-cp -r /vagrant/vendor/user-env-compile user-env-compile
-
-rm -r mariadb
-cp -r /vagrant/vendor/mariadb mariadb
-
-rm -r custom-domains
-cp -r /vagrant/vendor/custom-domains custom-domains
-
-rm -r nginx-vhosts-custom-configuration
-cp -r /vagrant/vendor/nginx-vhosts-custom-configuration nginx-vhosts-custom-configuration
-
-# remove previously used plugins
-if [ -d "/var/lib/dokku/plugins/domains-plugin" ]; then
-    rm -r /var/lib/dokku/plugins/domains-plugin
-fi
+rm -r /var/lib/dokku/plugins/
+cp -r /vagrant/vendor/docker-plugins /var/lib/dokku/plugins
 
 # update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
 
