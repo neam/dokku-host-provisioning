@@ -25,21 +25,54 @@ echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to re
 
 cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
 
-# update dokku to a pinned down revision of master branch and docker that we have tested
+# function definitions
 
-rm -r /root/dokku/
-cp -r /vagrant/vendor/dokku /root/dokku
-cd /root/dokku/
-DOCKER_VERSION=1.2.0 make install
-service docker restart
-sleep 3
+install_dokku() {
+    rm -r /root/dokku/
+    cp -r /vagrant/vendor/dokku /root/dokku
+    cd /root/dokku/
+    DOCKER_VERSION=<%= ENV['DOCKER_VERSION'] %> make install
+    service docker restart
+    sleep 3
+}
 
-# pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
+install_buildstep() {
+    rm -r /root/buildstep
+    cp -r /vagrant/vendor/buildstep /root/buildstep
+    cd /root/buildstep
+    sudo make build
+}
 
-rm -r /tmp/buildstep
-cp -r /vagrant/vendor/buildstep /tmp/buildstep
-cd /tmp/buildstep
-sudo make build
+# install dokku to a pinned down revision of master branch and docker that we have tested
+
+if [ ! -f "/root/dokku/REVISION" ]; then
+    install_dokku
+fi
+
+installed_docker_version="$(dpkg-query -S "$(which docker)" | awk '{ print $1 }' | sed 's/lxc-docker-//g' | sed 's/://g')"
+installed_dokku_revision="$(cat /root/dokku/REVISION)"
+
+if [ "$installed_docker_version" != "<%= ENV['DOCKER_VERSION'] %>" ] || [ "$installed_dokku_revision" != "<%= ENV['DOKKU_REVISION'] %>" ]; then
+
+    echo "Warning: Upgrading Dokku and Docker! This may lead to unexpected consequences regarding already running containers"
+    install_dokku
+
+fi
+
+# install buildstep to a pinned down version of buildstep that we have tested
+
+if [ ! -f "/root/buildstep/REVISION" ]; then
+    install_buildstep
+fi
+
+installed_buildstep_version="$(cat /root/buildstep/REVISION)"
+
+if [ "$installed_buildstep_version" != "<%= ENV['BUILDSTEP_REVISION'] %>" ]; then
+
+    echo "Warning: Upgrading Buildstep! This will affect already deployed dokku apps as soon as they are rebuilt/updated"
+    install_buildstep
+
+fi
 
 # skip GUI install - install by script
 if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
