@@ -21,6 +21,50 @@ echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to re
 # not necessary here since it is done when provisioning newrelic below - activate if newrelic provisioning step is removed
 #apt-get update
 
+# install shell-scripts in /usr/local/bin
+
+cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
+
+# update dokku to a pinned down revision of master branch and docker that we have tested
+
+rm -r /root/dokku/
+cp -r /vagrant/vendor/dokku /root/dokku
+cd /root/dokku/
+DOCKER_VERSION=1.2.0 make install
+service docker restart
+sleep 3
+
+# pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
+
+rm -r /tmp/buildstep
+cp -r /vagrant/vendor/buildstep /tmp/buildstep
+cd /tmp/buildstep
+sudo make build
+
+# skip GUI install - install by script
+if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
+    echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
+    echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
+    cat /root/.ssh/authorized_keys | head -n 1 | sshcommand acl-add dokku admin
+    rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start
+    rm /etc/init/dokku-installer.conf && stop dokku-installer
+fi
+
+# install dokku plugins
+
+rm -r /var/lib/dokku/plugins/
+cp -r /vagrant/vendor/dokku-plugins /var/lib/dokku/plugins
+
+# update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
+
+sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
+cat /etc/nginx/nginx.conf | grep server
+/etc/init.d/nginx restart
+
+# add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
+
+echo '#export DOKKU_TRACE=1' > /home/dokku/dokkurc
+
 # newrelic
 
 wget -O - http://download.newrelic.com/548C16BF.gpg | sudo apt-key add -
@@ -74,50 +118,6 @@ fi
 docker pull nisenabe/mailcatcher
 docker ps -a | grep 'nisenabe/mailcatcher' | awk '{ print $1 }' | xargs docker rm -f
 docker run -d -p 1080:1080 -p 1025:1025 nisenabe/mailcatcher mailcatcher -f --verbose --ip 0.0.0.0 --smtp-port 1025 --http-port 1080
-
-# install shell-scripts in /usr/local/bin
-
-cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
-
-# update dokku to a pinned down revision of master branch and docker that we have tested
-
-rm -r /root/dokku/
-cp -r /vagrant/vendor/dokku /root/dokku
-cd /root/dokku/
-DOCKER_VERSION=1.2.0 make install
-service docker restart
-sleep 3
-
-# pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
-
-rm -r /tmp/buildstep
-cp -r /vagrant/vendor/buildstep /tmp/buildstep
-cd /tmp/buildstep
-sudo make build
-
-# skip GUI install - install by script
-if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
-    echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
-    echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
-    cat /root/.ssh/authorized_keys | head -n 1 | sshcommand acl-add dokku admin
-    rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start
-    rm /etc/init/dokku-installer.conf && stop dokku-installer
-fi
-
-# install dokku plugins
-
-rm -r /var/lib/dokku/plugins/
-cp -r /vagrant/vendor/dokku-plugins /var/lib/dokku/plugins
-
-# update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
-
-sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
-cat /etc/nginx/nginx.conf | grep server
-/etc/init.d/nginx restart
-
-# add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
-
-echo '#export DOKKU_TRACE=1' > /home/dokku/dokkurc
 
 # done
 
