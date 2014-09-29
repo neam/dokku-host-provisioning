@@ -1,7 +1,30 @@
-Dokku Vagrant Configuration
+Dokku Host Provisioning
 -----------------------------
 
+Provide monitorable, debuggable and reliable production and/or staging environments using Dokku.
+
 Uses [Vagrant](http://www.vagrantup.com/) to create and update digital ocean droplets that runs a specific version of Dokku, Docker and various plug-ins.
+
+Provisions:
+
+* Specific tested versions of Docker, Dokku, Buildstep and Dokku plugins
+* New Relic
+* Papertrail
+* Mailcatcher
+* nsenter
+* htop and mosh
+* Swap
+* A set of helper shell scripts (read below under "Shell Scripts")
+
+## Dokku Plugins
+
+* custom-domains
+* docker-options
+* mariadb
+* nginx-vhosts-custom-configuration
+* user-env-compile
+
+## Usage
 
 To use the vagrant configurations, you need the vagrant digital ocean plugin:
 
@@ -50,7 +73,7 @@ To enter the virtual machine:
 
 ## Setting the default vhost
 
-Push an app to your dokku host with a name like "00-default". As long as it lists first in `ls /home/dokku/*/nginx.conf | head`, it will be used as the default nginx vhost.
+Currently when you visit a vhost on the dokku domain that does not exist, a seemingly random dokku app deployment is served to the user. To prevent confusion, push an app to your dokku host with a name like "00-default". As long as it lists first in `ls /home/dokku/*/nginx.conf | head`, it will be used as the default nginx vhost.
 
 Example:
 
