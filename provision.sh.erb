@@ -2,6 +2,9 @@
 
 set -x
 
+# fail on any error
+set -o errexit
+
 cd /root
 
 # in order to prevent accidental overwrites of /root contents, we cd into our own directory where we perform the provisioning
@@ -17,6 +20,91 @@ echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to re
 
 # not necessary here since it is done when provisioning newrelic below - activate if newrelic provisioning step is removed
 #apt-get update
+
+# install shell-scripts in /usr/local/bin
+
+cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
+
+# function definitions
+
+install_dokku() {
+    rm -r /root/dokku/
+    cp -r /vagrant/vendor/dokku /root/dokku
+    cd /root/dokku/
+    DOCKER_VERSION=<%= ENV['DOCKER_VERSION'] %> make install
+    service docker restart
+    sleep 3
+}
+
+install_buildstep() {
+    rm -r /root/buildstep
+    cp -r /vagrant/vendor/buildstep /root/buildstep
+    cd /root/buildstep
+    sudo make build
+}
+
+# install dokku to a pinned down revision of master branch and docker that we have tested
+
+if [ ! -f "/root/dokku/REVISION" ]; then
+    install_dokku
+fi
+
+installed_docker_version="$(dpkg-query -S "$(which docker)" | awk '{ print $1 }' | sed 's/lxc-docker-//g' | sed 's/://g')"
+installed_dokku_revision="$(cat /root/dokku/REVISION)"
+
+if [ "$installed_docker_version" != "<%= ENV['DOCKER_VERSION'] %>" ] || [ "$installed_dokku_revision" != "<%= ENV['DOKKU_REVISION'] %>" ]; then
+
+    echo "Warning: Upgrading Dokku and Docker! This may lead to unexpected consequences regarding already running containers"
+    install_dokku
+
+fi
+
+# install buildstep to a pinned down version of buildstep that we have tested
+
+if [ ! -f "/root/buildstep/REVISION" ]; then
+    install_buildstep
+fi
+
+installed_buildstep_version="$(cat /root/buildstep/REVISION)"
+
+if [ "$installed_buildstep_version" != "<%= ENV['BUILDSTEP_REVISION'] %>" ]; then
+
+    echo "Warning: Upgrading Buildstep! This will affect already deployed dokku apps as soon as they are rebuilt/updated"
+    install_buildstep
+
+fi
+
+# skip GUI install - install by script
+if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
+    echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
+    echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
+    cat /root/.ssh/authorized_keys | head -n 1 | sshcommand acl-add dokku admin
+    rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start
+    rm /etc/init/dokku-installer.conf && stop dokku-installer
+fi
+
+# remove existing custom plugins
+
+cd /var/lib/dokku/plugins/
+shopt -s extglob
+set +o errexit
+rm -rv !(dokku-plugins|nginx-vhosts|00_dokku-standard|backup|checks|config|git|WARNING)
+set -o errexit
+
+# install our custom dokku plugins
+
+cp -r /vagrant/vendor/dokku-plugins/* /var/lib/dokku/plugins/
+dokku plugins-install
+
+# update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
+
+sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
+cat /etc/nginx/nginx.conf | grep server
+/etc/init.d/nginx restart
+
+# add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
+
+echo '#export DOKKU_TRACE=1' > /home/dokku/dokkurc
 
 # newrelic
 
@@ -69,107 +157,10 @@ fi
 # install and start mailcatcher on the dokku instance
 
 docker pull nisenabe/mailcatcher
+set +o errexit
 docker ps -a | grep 'nisenabe/mailcatcher' | awk '{ print $1 }' | xargs docker rm -f
+set -o errexit
 docker run -d -p 1080:1080 -p 1025:1025 nisenabe/mailcatcher mailcatcher -f --verbose --ip 0.0.0.0 --smtp-port 1025 --http-port 1080
-
-# install shell-scripts in /usr/local/bin
-
-cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
-
-# update dokku to a pinned down revision of master branch and docker that we have tested
-
-apt-get install -y -q git
-cd /root/dokku/
-git checkout master
-git remote add neam https://github.com/neam/dokku.git
-git fetch neam
-git checkout 6bf80002f8d5e5b1345081790480c434b7bcb069 # awaiting-prs [include-nginx-conf.d (#579), create-command (#599)]
-DOCKER_VERSION=1.1.2 make install
-service docker restart
-
-# pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
-
-rm -r /tmp/buildstep
-git clone https://github.com/progrium/buildstep.git /tmp/buildstep
-cd /tmp/buildstep
-git checkout 90aa814665815ddcbd72d0a8ace01be2978aa11a
-sudo make build
-
-# skip GUI install - install by script
-if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
-    echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
-    echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
-    cat /root/.ssh/authorized_keys | head -n 1 | sshcommand acl-add dokku admin
-    rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start
-    rm /etc/init/dokku-installer.conf && stop dokku-installer
-fi
-
-# install relevant dokku plugins - pinned down to known revisions
-
-cd /var/lib/dokku/plugins
-if [ ! -d "docker-options" ]; then
-    git clone https://github.com/dyson/dokku-docker-options.git docker-options
-fi
-cd docker-options
-git fetch
-git checkout f2f9504d40e99e4ca344f9a7612529dc8a55b48c
-
-cd /var/lib/dokku/plugins
-if [ ! -d "rebuild" ]; then
-    git clone https://github.com/scottatron/dokku-rebuild rebuild
-fi
-cd rebuild
-git fetch
-git checkout c58cbecaa85133538aa7747073f0d82ba4834ac4
-
-cd /var/lib/dokku/plugins
-if [ ! -d "user-env-compile" ]; then
-    git clone https://github.com/musicglue/dokku-user-env-compile.git user-env-compile
-fi
-cd user-env-compile
-git fetch
-git checkout 447dba7ff0a274d5456ee128fc7cef97bbd7bfa9
-
-cd /var/lib/dokku/plugins
-if [ ! -d "mariadb" ]; then
-    git clone --recursive https://github.com/motin/dokku-md-plugin mariadb
-fi
-cd mariadb
-git remote set-url origin https://github.com/motin/dokku-md-plugin
-git fetch
-git checkout 02986d915e8e11e398c5eccbb4893e7ba92ff6db # awaiting-prs
-git submodule init
-git submodule sync
-git submodule update
-
-cd /var/lib/dokku/plugins
-if [ ! -d "domains-plugin" ]; then
-    git clone https://github.com/neam/dokku-domains-plugin.git domains-plugin
-fi
-cd domains-plugin
-git fetch
-git checkout 5d96121b2b4e42f0bd9f2e60814b080c9eae44f5 # feature/update-existing-nginx.conf
-
-cd /var/lib/dokku/plugins
-if [ ! -d "nginx-vhosts-custom-configuration" ]; then
-    git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
-fi
-cd nginx-vhosts-custom-configuration
-git remote set-url origin https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git
-git fetch
-git checkout 51f71ad9c4c34cf81bc5873a19e5d7d267420e42
-
-dokku plugins-install
-
-# update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
-
-sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
-cat /etc/nginx/nginx.conf | grep server
-/etc/init.d/nginx restart
-
-# add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
-
-echo '#export DOKKU_TRACE=1' > /home/dokku/dokkurc
 
 # done
 
