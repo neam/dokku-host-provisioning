@@ -83,10 +83,18 @@ if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
     rm /etc/init/dokku-installer.conf && stop dokku-installer
 fi
 
-# install dokku plugins
+# remove existing custom plugins
 
-rm -r /var/lib/dokku/plugins/
-cp -r /vagrant/vendor/dokku-plugins /var/lib/dokku/plugins
+cd /var/lib/dokku/plugins/
+shopt -s extglob
+set +o errexit
+rm -rv !(dokku-plugins|nginx-vhosts|00_dokku-standard|backup|checks|config|git|WARNING)
+set -o errexit
+
+# install our custom dokku plugins
+
+cp -r /vagrant/vendor/dokku-plugins/* /var/lib/dokku/plugins/
+dokku plugins-install
 
 # update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
 
