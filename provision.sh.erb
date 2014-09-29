@@ -2,6 +2,9 @@
 
 set -x
 
+# fail on any error
+set -o errexit
+
 cd /root
 
 # in order to prevent accidental overwrites of /root contents, we cd into our own directory where we perform the provisioning
@@ -84,6 +87,7 @@ cp -r /vagrant/vendor/dokku /root/dokku
 cd /root/dokku/
 DOCKER_VERSION=1.1.2 make install
 service docker restart
+sleep 3
 
 # pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
 
@@ -104,7 +108,7 @@ fi
 # install dokku plugins
 
 rm -r /var/lib/dokku/plugins/
-cp -r /vagrant/vendor/docker-plugins /var/lib/dokku/plugins
+cp -r /vagrant/vendor/dokku-plugins /var/lib/dokku/plugins
 
 # update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
 
