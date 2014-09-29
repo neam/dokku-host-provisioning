@@ -17,9 +17,9 @@
 [submodule "vendor/mariadb"]
 	path = vendor/mariadb
 	url = https://github.com/motin/dokku-md-plugin.git
-[submodule "vendor/domains-plugin"]
-	path = vendor/domains-plugin
-	url = https://github.com/neam/dokku-domains-plugin.git
+[submodule "vendor/custom-domains"]
+	path = vendor/custom-domains
+	url = https://github.com/neam/dokku-custom-domains.git
 [submodule "vendor/nginx-vhosts-custom-configuration"]
 	path = vendor/nginx-vhosts-custom-configuration
 	url = https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git

@@ -119,12 +119,17 @@ rm -r mariadb
 cp -r /vagrant/vendor/maria mariadb
 
 cd /var/lib/dokku/plugins
-rm -r domains-plugin
-cp -r /vagrant/vendor/domains-plugin domains-plugin
+rm -r custom-domains
+cp -r /vagrant/vendor/custom-domains custom-domains
 
 cd /var/lib/dokku/plugins
 rm -r nginx-vhosts-custom-configuration
 cp -r /vagrant/vendor/nginx-vhosts-custom-configuration nginx-vhosts-custom-configuration
+
+# remove previously used plugins
+if [ -d "/var/lib/dokku/plugins/domains-plugin" ]; then
+    rm -r /var/lib/dokku/plugins/domains-plugin
+fi
 
 # update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
 
