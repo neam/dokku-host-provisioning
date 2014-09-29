@@ -1,3 +1,25 @@
+[submodule "vendor/dokku"]
+	path = vendor/dokku
+	url = https://github.com/neam/dokku.git
+	branch = awaiting-prs
+[submodule "vendor/buildstep"]
+	path = vendor/buildstep
+	url = https://github.com/progrium/buildstep.git
+[submodule "vendor/docker-options"]
+	path = vendor/docker-options
+	url = https://github.com/dyson/dokku-docker-options.git
+[submodule "vendor/rebuild"]
+	path = vendor/rebuild
+	url = https://github.com/scottatron/dokku-rebuild
+[submodule "vendor/user-env-compile"]
+	path = vendor/user-env-compile
+	url = https://github.com/musicglue/dokku-user-env-compile.git
 [submodule "vendor/mariadb"]
 	path = vendor/mariadb
 	url = https://github.com/motin/dokku-md-plugin.git
+[submodule "vendor/domains-plugin"]
+	path = vendor/domains-plugin
+	url = https://github.com/neam/dokku-domains-plugin.git
+[submodule "vendor/nginx-vhosts-custom-configuration"]
+	path = vendor/nginx-vhosts-custom-configuration
+	url = https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git

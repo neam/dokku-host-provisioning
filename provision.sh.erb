@@ -79,20 +79,16 @@ cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
 # update dokku to a pinned down revision of master branch and docker that we have tested
 
 apt-get install -y -q git
-cd /root/dokku/
-git checkout master
-git remote add neam https://github.com/neam/dokku.git
-git fetch neam
-git checkout 6bf80002f8d5e5b1345081790480c434b7bcb069 # awaiting-prs [include-nginx-conf.d (#579), create-command (#599)]
+rm -r /root/dokku/
+cp -r /vagrant/vendor/dokku /root/dokku
 DOCKER_VERSION=1.1.2 make install
 service docker restart
 
 # pin down version of buildstep (and make sure to use an up to date version that works despite quantal being eol)
 
 rm -r /tmp/buildstep
-git clone https://github.com/progrium/buildstep.git /tmp/buildstep
+cp -r /vagrant/vendor/buildstep /tmp/buildstep
 cd /tmp/buildstep
-git checkout 90aa814665815ddcbd72d0a8ace01be2978aa11a
 sudo make build
 
 # skip GUI install - install by script
@@ -107,51 +103,28 @@ fi
 # install relevant dokku plugins - pinned down to known revisions
 
 cd /var/lib/dokku/plugins
-if [ ! -d "docker-options" ]; then
-    git clone https://github.com/dyson/dokku-docker-options.git docker-options
-fi
-cd docker-options
-git fetch
-git checkout f2f9504d40e99e4ca344f9a7612529dc8a55b48c
+rm -r docker-options
+cp -r /vagrant/vendor/docker-options docker-options
 
 cd /var/lib/dokku/plugins
-if [ ! -d "rebuild" ]; then
-    git clone https://github.com/scottatron/dokku-rebuild rebuild
-fi
-cd rebuild
-git fetch
-git checkout c58cbecaa85133538aa7747073f0d82ba4834ac4
+rm -r rebuild
+cp -r /vagrant/vendor/rebuild rebuild
 
 cd /var/lib/dokku/plugins
-if [ ! -d "user-env-compile" ]; then
-    git clone https://github.com/musicglue/dokku-user-env-compile.git user-env-compile
-fi
-cd user-env-compile
-git fetch
-git checkout 447dba7ff0a274d5456ee128fc7cef97bbd7bfa9
+rm -r user-env-compile
+cp -r /vagrant/vendor/user-env-compile user-env-compile
 
 cd /var/lib/dokku/plugins
 rm -r mariadb
 cp -r /vagrant/vendor/maria mariadb
 
 cd /var/lib/dokku/plugins
-if [ ! -d "domains-plugin" ]; then
-    git clone https://github.com/neam/dokku-domains-plugin.git domains-plugin
-fi
-cd domains-plugin
-git fetch
-git checkout 5d96121b2b4e42f0bd9f2e60814b080c9eae44f5 # feature/update-existing-nginx.conf
+rm -r domains-plugin
+cp -r /vagrant/vendor/domains-plugin domains-plugin
 
 cd /var/lib/dokku/plugins
-if [ ! -d "nginx-vhosts-custom-configuration" ]; then
-    git clone https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git nginx-vhosts-custom-configuration
-fi
-cd nginx-vhosts-custom-configuration
-git remote set-url origin https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git
-git fetch
-git checkout 51f71ad9c4c34cf81bc5873a19e5d7d267420e42
-
-dokku plugins-install
+rm -r nginx-vhosts-custom-configuration
+cp -r /vagrant/vendor/nginx-vhosts-custom-configuration nginx-vhosts-custom-configuration
 
 # update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
 
