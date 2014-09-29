@@ -85,7 +85,7 @@ apt-get install -y -q git
 rm -r /root/dokku/
 cp -r /vagrant/vendor/dokku /root/dokku
 cd /root/dokku/
-DOCKER_VERSION=1.1.2 make install
+DOCKER_VERSION=1.2.0 make install
 service docker restart
 sleep 3
 
