@@ -81,6 +81,7 @@ cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
 apt-get install -y -q git
 rm -r /root/dokku/
 cp -r /vagrant/vendor/dokku /root/dokku
+cd /root/dokku/
 DOCKER_VERSION=1.1.2 make install
 service docker restart
 
@@ -102,27 +103,21 @@ fi
 
 # install relevant dokku plugins - pinned down to known revisions
 
-cd /var/lib/dokku/plugins
 rm -r docker-options
 cp -r /vagrant/vendor/docker-options docker-options
 
-cd /var/lib/dokku/plugins
 rm -r rebuild
 cp -r /vagrant/vendor/rebuild rebuild
 
-cd /var/lib/dokku/plugins
 rm -r user-env-compile
 cp -r /vagrant/vendor/user-env-compile user-env-compile
 
-cd /var/lib/dokku/plugins
 rm -r mariadb
 cp -r /vagrant/vendor/maria mariadb
 
-cd /var/lib/dokku/plugins
 rm -r custom-domains
 cp -r /vagrant/vendor/custom-domains custom-domains
 
-cd /var/lib/dokku/plugins
 rm -r nginx-vhosts-custom-configuration
 cp -r /vagrant/vendor/nginx-vhosts-custom-configuration nginx-vhosts-custom-configuration
 
