@@ -116,7 +116,9 @@ fi
 # install and start mailcatcher on the dokku instance
 
 docker pull nisenabe/mailcatcher
+set +o errexit
 docker ps -a | grep 'nisenabe/mailcatcher' | awk '{ print $1 }' | xargs docker rm -f
+set -o errexit
 docker run -d -p 1080:1080 -p 1025:1025 nisenabe/mailcatcher mailcatcher -f --verbose --ip 0.0.0.0 --smtp-port 1025 --http-port 1080
 
 # done
