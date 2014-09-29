@@ -4,7 +4,7 @@
 	branch = awaiting-prs
 [submodule "vendor/buildstep"]
 	path = vendor/buildstep
-	url = https://github.com/progrium/buildstep.git
+	url = https://github.com/darkpixel/buildstep.git
 [submodule "vendor/dokku-plugins/docker-options"]
 	path = vendor/dokku-plugins/docker-options
 	url = https://github.com/dyson/dokku-docker-options.git
