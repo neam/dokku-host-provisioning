@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Uses nsenter to step into a running container
+
 # usage:
 # ./docker-attach.sh CONTAINER_ID
 

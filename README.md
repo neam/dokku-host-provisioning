@@ -3,7 +3,9 @@ Dokku Host Provisioning
 
 Provide monitorable, debuggable and reliable production and/or staging environments using Dokku.
 
-Uses [Vagrant](http://www.vagrantup.com/) to create and update digital ocean droplets that runs a specific version of Dokku, Docker and various plug-ins.
+Uses [Vagrant](http://www.vagrantup.com/) to provisiong a Dokku host that runs a specific version of Dokku, Buildstep, Docker and various plug-ins.
+
+Allows easy provisioning of multiple Dokku Hosts (one for staging and another for production is a good idea for instance) by generating vagrant configurations separately for each host.
 
 Provisions:
 
@@ -43,7 +45,9 @@ The most notable difference is that your Dokku apps will be based on Ubuntu 14.0
 
 ## Usage
 
-To use the vagrant configurations, you need the vagrant digital ocean plugin:
+### Deploying a Dokku Host as a Digital Ocean droplet
+
+You need to have the vagrant digital ocean plugin installed:
 
     vagrant plugin install vagrant-digitalocean
 
@@ -88,6 +92,10 @@ To enter the virtual machine:
 
     vagrant ssh
 
+### Deploying a Dokku Host elsewhere
+
+The vagrant configuration currently includes support for the Digital Ocean provider only. Consult the Vagrant documentation on how to enable other providers. Any provider that works with Vagrant should work with these configurations since we don't use any Digital Ocean specific features.
+
 ## Setting the default vhost
 
 Currently when you visit a vhost on the dokku domain that does not exist, a seemingly random dokku app deployment is served to the user. To prevent confusion, push an app to your dokku host with a name like "00-default". As long as it lists first in `ls /home/dokku/*/nginx.conf | head`, it will be used as the default nginx vhost.
@@ -109,6 +117,8 @@ git push dokku@$HOSTNAME:$APPNAME develop:master
 
 The following shell scripts are available in /usr/local/bin on the dokku hosts, and may be useful:
 
-* docker-enter.sh - Uses nsenter to step into a running container
-* remove-cid-files-that-dont-have-active-containers.sh - Makes sure that all dokku container files contain ids to running docker containers
-* limit-dokku-deployments.sh - Use to limit commit-specific deployments
+* `docker-enter.sh` - Uses nsenter to step into a running container (unlike `docker run` which will allow you to enter a new container only)
+* `limit-dokku-apps.sh` - Use to delete dokku apps en masse (to free up resources)
+* `delete-dokku-apps.sh` - Used by `limit-dokku-apps.sh` to actually delete one or many apps
+* `remove-phantom-docker-images-and-containers.sh` - The name says it all
+* `dokku-user-allow-port-forwarding.sh` - This script enables port-forwarding for all users using ssh keys with the dokku user and thus allows non-root users to connect to the mariadb instances on the dokku host
