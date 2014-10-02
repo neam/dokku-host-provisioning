@@ -24,6 +24,13 @@ Provisions:
 * nginx-vhosts-custom-configuration
 * user-env-compile
 
+## Dokku Patches
+
+The version of Dokku provisioned is the latest master branch as of 2014-10-02 with the following additional patches that have yet to be merged into official dokku:
+
+* [Plugin nginx-vhosts includes files in folder nginx.conf.d](https://github.com/progrium/dokku/pull/579)
+* [Added create command](https://github.com/progrium/dokku/pull/599)
+
 ## Usage
 
 To use the vagrant configurations, you need the vagrant digital ocean plugin:
