@@ -56,9 +56,11 @@ Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and need
 
 Notably, the default PHP buildpack is currently broken. To use a the above working PHP buildpack in your project repo:
 
-    echo 'export BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git' > .env
-    echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
-    git commit -m 'Updated PHP buildpack'
+```bash
+echo 'export BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git' > .env
+echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
+git commit -m 'Updated PHP buildpack'
+```
 
 ## Usage
 
@@ -66,48 +68,64 @@ Notably, the default PHP buildpack is currently broken. To use a the above worki
 
 You need to have the vagrant digital ocean plugin installed:
 
-    vagrant plugin install vagrant-digitalocean
+```bash
+vagrant plugin install vagrant-digitalocean
+```
 
 Some general configuration variables are necessary for the configurations before provisioning the instances:
 
-    export DIGITAL_OCEAN_TOKEN="replaceme"
-    export DIGITAL_OCEAN_REGION="Amsterdam 2"
-    export PAPERTRAIL_PORT="12345"
-    export NEW_RELIC_LICENSE_KEY="replaceme"
+```bash
+export DIGITAL_OCEAN_TOKEN="replaceme"
+export DIGITAL_OCEAN_REGION="Amsterdam 2"
+export PAPERTRAIL_PORT="12345"
+export NEW_RELIC_LICENSE_KEY="replaceme"
+```
 
 Set configuration that depends on DNS and performance requirements (Note: Dokku needs wildcard subdomain registration to be able to map virtual hosts based on sub-domains):
 
 Example 1:
 
-    export VHOST=foodev.com
-    export SIZE=8GB
+```bash
+export VHOST=foodev.com
+export SIZE=8GB
+```
 
 Example 2:
 
-    export VHOST=foo.com
-    export SIZE=4GB
+```bash
+export VHOST=foo.com
+export SIZE=4GB
+```
 
 To provision a dokku-enabled instance running in digital ocean:
 
-    export HOSTNAME=dokku.$VHOST
-    cd vagrant/dokku/
-    mkdir -p build/$HOSTNAME
-    cd build/$HOSTNAME
-    ../../build-vagrant-config.sh
+```bash
+export HOSTNAME=dokku.$VHOST
+cd vagrant/dokku/
+mkdir -p build/$HOSTNAME
+cd build/$HOSTNAME
+../../build-vagrant-config.sh
+```
 
 First time, run:
 
-    git submodule init
-    git submodule update --recursive
-    vagrant up --provider=digital_ocean
+```bash
+git submodule init
+git submodule update --recursive
+vagrant up --provider=digital_ocean
+```
 
 With an already running droplet:
 
-    vagrant provision
+```bash
+vagrant provision
+```
 
 To enter the virtual machine:
 
-    vagrant ssh
+```bash
+vagrant ssh
+```
 
 ### Deploying a Dokku Host elsewhere
 
