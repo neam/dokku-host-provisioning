@@ -43,7 +43,7 @@ The most notable difference is that your Dokku apps will be based on Ubuntu 14.0
 
 1.2.0 is the current version of Docker provisioned.
 
-## Supported buildpacks
+## Working buildpacks
 
 These buildpacks are known to work with the provisioned Dokku host:
 
@@ -53,6 +53,12 @@ These buildpacks are known to work with the provisioned Dokku host:
  * [https://github.com/ddollar/heroku-buildpack-multi.git]()
 
 Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and needs to be updated before working.
+
+Notably, the default PHP buildpack is currently broken. To use a the above working PHP buildpack in your project repo:
+
+    echo 'export BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git' > .env
+    echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
+    git commit -m 'Updated PHP buildpack'
 
 ## Usage
 
