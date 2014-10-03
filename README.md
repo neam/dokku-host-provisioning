@@ -59,6 +59,7 @@ Notably, the default PHP buildpack is currently broken. To use a the above worki
 ```bash
 echo 'export BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git' > .env
 echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
+git add .env .buildpacks
 git commit -m 'Updated PHP buildpack'
 ```
 
