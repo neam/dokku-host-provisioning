@@ -43,6 +43,17 @@ The most notable difference is that your Dokku apps will be based on Ubuntu 14.0
 
 1.2.0 is the current version of Docker provisioned.
 
+## Supported buildpacks
+
+These buildpacks are known to work with the provisioned Dokku host:
+
+ * [https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d]()
+ * [https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d]()
+ * [https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323]()
+ * [https://github.com/ddollar/heroku-buildpack-multi.git]()
+
+Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and needs to be updated before working.
+
 ## Usage
 
 ### Deploying a Dokku Host as a Digital Ocean droplet
