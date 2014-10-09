@@ -149,6 +149,20 @@ export APPNAME=00-default
 git push dokku@$HOSTNAME:$APPNAME develop:master
 ```
 
+## Supporting apps that have submodules that reference private repositories
+
+The dokku user on the Dokku host needs to be able to successfully authenticate by ssh key to your git host.
+
+If your repositories are hosted on GitHub, log in as root on the Dokku host and make sure the following works by following [official GitHub instructions](https://help.github.com/articles/generating-ssh-keys/):
+
+```bash
+su dokku
+ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+ssh -T git@github.com
+```
+
+(Details why this is necessary can be found in [this comment](https://github.com/progrium/dokku/issues/644#issuecomment-57082992))
+
 ## Shell scripts
 
 The following shell scripts are available in /usr/local/bin on the dokku hosts, and may be useful:
