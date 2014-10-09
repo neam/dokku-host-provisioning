@@ -28,7 +28,9 @@ cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
 # function definitions
 
 install_dokku() {
-    rm -r /root/dokku/
+    if [ -d /root/dokku/ ]; then
+        rm -r /root/dokku/
+    fi
     cp -r /vagrant/vendor/dokku /root/dokku
     cd /root/dokku/
     DOCKER_VERSION=<%= ENV['DOCKER_VERSION'] %> make install
@@ -37,7 +39,9 @@ install_dokku() {
 }
 
 install_buildstep() {
-    rm -r /root/buildstep
+    if [ -d /root/buildstep ]; then
+        rm -r /root/buildstep
+    fi
     cp -r /vagrant/vendor/buildstep /root/buildstep
     cd /root/buildstep
     sudo make build
