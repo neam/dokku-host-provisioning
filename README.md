@@ -210,6 +210,14 @@ ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 ssh -T git@github.com
 ```
 
+If your repositories are hosted on Bitbucket, log in as root on the Dokku host and make sure the following works:
+
+```bash
+su dokku
+ssh-keyscan -t rsa bitbucket.org >> ~/.ssh/known_hosts
+ssh -T git@bitbucket.org
+```
+
 (Details why this is necessary can be found in [this comment](https://github.com/progrium/dokku/issues/644#issuecomment-57082992))
 
 ## Shell scripts
