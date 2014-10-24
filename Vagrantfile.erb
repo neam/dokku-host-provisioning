@@ -33,6 +33,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     provider.size = "<%= ENV['SIZE'] %>"
   end
 
+  config.vm.provider :managed do |managed, override|
+    managed.server = "<%= ENV['HOSTNAME'] %>"
+    override.ssh.username = "root"
+  end
+
   # sets the name of the droplet/server
   config.vm.define "<%= ENV['HOSTNAME'] %>" do |t|
   end

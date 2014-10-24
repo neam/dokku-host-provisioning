@@ -102,6 +102,14 @@ export SIZE='2 GB Performance'
 export PROVIDER=rackspace
 ```
 
+Note: There is currently no way to link to an existing rackspace server - `vagrant up` will create a new server on Rackspace. To connect to an existing server, use the "" instructions below.
+
+#### Any existing server accessible using SSH
+
+```bash
+export PROVIDER=managed
+```
+
 ### Deploying a Dokku Host
 
 Some general configuration variables are necessary for the configurations before provisioning the instances:
@@ -143,7 +151,7 @@ git submodule update --recursive
 vagrant up --provider=$PROVIDER
 ```
 
-With an already running droplet:
+With an already running server:
 
 ```bash
 vagrant provision
