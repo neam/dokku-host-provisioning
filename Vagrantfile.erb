@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "dokku_host"
+  config.vm.box = "tknerr/managed-server-dummy"
 
   config.ssh.private_key_path = "~/.ssh/id_rsa"
 
