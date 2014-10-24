@@ -170,6 +170,17 @@ vagrant ssh
 The vagrant configuration currently includes support deploying from scratch for the Digital Ocean and Rackspace providers only. For any other deployment target you may use the `managed` provider in order to provision any existing host accessible by SSH.
 Consult the Vagrant documentation on how to deplor from scratch using other providers. Any provider that works with Vagrant should work with these configurations since we don't use any provider-specific features.
 
+## Adding deploy/push-access to a developer
+
+From a machine that has root-access to the dokku-host:
+
+```bash
+export DOKKU_HOST=$HOSTNAME
+export PUBLIC_KEY=~/.ssh/id_rsa.pub
+export DEVELOPER=john
+cat $PUBLIC_KEY | ssh root@$DOKKU_HOST "sudo sshcommand acl-add dokku $DEVELOPER"
+```
+
 ## Setting the default vhost
 
 Currently when you visit a vhost on the dokku domain that does not exist, a seemingly random dokku app deployment is served to the user. To prevent confusion, push an app to your dokku host with a name like "00-default". As long as it lists first in `ls /home/dokku/*/nginx.conf | head`, it will be used as the default nginx vhost.
