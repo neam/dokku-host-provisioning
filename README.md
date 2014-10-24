@@ -67,7 +67,7 @@ git commit -m 'Updated PHP buildpack'
 
 ### Prepare target destination
 
-#### Digital Ocean droplet
+#### A new or existing Digital Ocean droplet
 
 You need to have the vagrant digital ocean plugin installed:
 
@@ -84,7 +84,9 @@ export SIZE=8GB
 export PROVIDER=digital_ocean
 ```
 
-#### Rackspace Cloud Server
+Note: If the droplet already exists, `vagrant up` will link to the existing droplet and let you provision that. Note that it will not resize the droplet to the requested size - that was to be done manually.
+
+#### A new Rackspace Cloud Server
 
 You need to have the vagrant rackspace plugin installed:
 
@@ -163,9 +165,10 @@ To enter the virtual machine:
 vagrant ssh
 ```
 
-### Deploying a Dokku Host elsewhere
+### Deploying a Dokku Host from scratch elsewhere
 
-The vagrant configuration currently includes support for the Digital Ocean and Rackspace providers only. Consult the Vagrant documentation on how to enable other providers. Any provider that works with Vagrant should work with these configurations since we don't use any provider-specific features.
+The vagrant configuration currently includes support deploying from scratch for the Digital Ocean and Rackspace providers only. For any other deployment target you may use the `managed` provider in order to provision any existing host accessible by SSH.
+Consult the Vagrant documentation on how to deplor from scratch using other providers. Any provider that works with Vagrant should work with these configurations since we don't use any provider-specific features.
 
 ## Setting the default vhost
 
