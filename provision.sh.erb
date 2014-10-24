@@ -141,7 +141,7 @@ export HOSTNAME=`hostname`
 echo "\$LocalHostName $HOSTNAME" > /etc/rsyslog.d/00-fixed-hostname.conf
 echo "*.*          @logs.papertrailapp.com:$PAPERTRAIL_PORT" > /etc/rsyslog.d/999-papertrail.conf
 service rsyslog restart
-killall remote_syslog
+killall remote_syslog || true
 remote_syslog -p $PAPERTRAIL_PORT --hostname $HOSTNAME -d logs.papertrailapp.com /var/log/nginx/access.log /var/log/nginx/error.log /var/log/newrelic/nrsysmond.log
 
 # nsenter
