@@ -18,8 +18,10 @@ cd provisioning
 echo 'export PS1="${PS1/\\h/\\H}"' >> ~/.bashrc
 echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to replace' >> ~/.bashrc
 
-# not necessary here since it is done when provisioning newrelic below - activate if newrelic provisioning step is removed
-#apt-get update
+# install build-essential, htop and mosh
+
+apt-get update
+apt-get install -y -q build-essential htop mosh
 
 # install shell-scripts in /usr/local/bin
 
@@ -129,10 +131,6 @@ if [ ! -f "/var/swap.1" ]; then
     sudo /sbin/swapon /var/swap.1
     echo '/var/swap.1 swap swap defaults 0 0' > /etc/fstab
 fi
-
-# install htop and mosh
-
-apt-get install -y -q htop mosh
 
 # papertrail for the dokku rsyslog and vhost proxy
 
