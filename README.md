@@ -65,7 +65,9 @@ git commit -m 'Updated PHP buildpack'
 
 ## Usage
 
-### Deploying a Dokku Host as a Digital Ocean droplet
+### Prepare target destination
+
+#### Digital Ocean droplet
 
 You need to have the vagrant digital ocean plugin installed:
 
@@ -73,36 +75,61 @@ You need to have the vagrant digital ocean plugin installed:
 vagrant plugin install vagrant-digitalocean
 ```
 
-Some general configuration variables are necessary for the configurations before provisioning the instances:
+Set configuration specific to Digital Ocean:
 
 ```bash
 export DIGITAL_OCEAN_TOKEN="replaceme"
-export DIGITAL_OCEAN_REGION="Amsterdam 2"
+export DIGITAL_OCEAN_REGION="ams2"
+export SIZE=8GB
+export PROVIDER=digital_ocean
+```
+
+#### Rackspace Cloud Server
+
+You need to have the vagrant rackspace plugin installed:
+
+```bash
+vagrant plugin install vagrant-rackspace
+```
+
+Set configuration specific to Rackspace:
+
+```bash
+export RACKSPACE_USERNAME="replaceme"
+export RACKSPACE_API_KEY="replaceme"
+export RACKSPACE_VM_REGION="lon"
+export SIZE='2 GB Performance'
+export PROVIDER=rackspace
+```
+
+### Deploying a Dokku Host
+
+Some general configuration variables are necessary for the configurations before provisioning the instances:
+
+```bash
 export PAPERTRAIL_PORT="12345"
 export NEW_RELIC_LICENSE_KEY="replaceme"
 ```
 
-Set configuration that depends on DNS and performance requirements (Note: Dokku needs wildcard subdomain registration to be able to map virtual hosts based on sub-domains):
+Set configuration that depends on DNS (Note: Dokku needs wildcard subdomain registration to be able to map virtual hosts based on sub-domains):
 
 Example 1:
 
 ```bash
 export VHOST=foodev.com
-export SIZE=8GB
 ```
 
 Example 2:
 
 ```bash
 export VHOST=foo.com
-export SIZE=4GB
 ```
 
-To provision a dokku-enabled instance running in digital ocean:
+To provision a dokku host:
 
 ```bash
 export HOSTNAME=dokku.$VHOST
-cd vagrant/dokku/
+cd dokku-host-provisioning/
 mkdir -p build/$HOSTNAME
 cd build/$HOSTNAME
 ../../build-vagrant-config.sh
@@ -113,7 +140,7 @@ First time, run:
 ```bash
 git submodule init
 git submodule update --recursive
-vagrant up --provider=digital_ocean
+vagrant up --provider=$PROVIDER
 ```
 
 With an already running droplet:
@@ -130,7 +157,7 @@ vagrant ssh
 
 ### Deploying a Dokku Host elsewhere
 
-The vagrant configuration currently includes support for the Digital Ocean provider only. Consult the Vagrant documentation on how to enable other providers. Any provider that works with Vagrant should work with these configurations since we don't use any Digital Ocean specific features.
+The vagrant configuration currently includes support for the Digital Ocean and Rackspace providers only. Consult the Vagrant documentation on how to enable other providers. Any provider that works with Vagrant should work with these configurations since we don't use any provider-specific features.
 
 ## Setting the default vhost
 

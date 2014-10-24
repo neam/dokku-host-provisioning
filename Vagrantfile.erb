@@ -6,12 +6,23 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "digital_ocean"
+  config.vm.box = "dokku_host"
 
   config.ssh.private_key_path = "~/.ssh/id_rsa"
 
   # this allows the vagrant box to use the private keys on the host computer
   config.ssh.forward_agent = true
+
+  config.vm.provider :rackspace do |rs, override|
+    rs.username           = "<%= ENV['RACKSPACE_USERNAME'] %>"
+    rs.api_key            = "<%= ENV['RACKSPACE_API_KEY'] %>"
+    rs.flavor             = /<%= ENV['SIZE'] %>/
+    rs.image              = /Trusty/
+    rs.rackspace_region   = "<%= ENV['RACKSPACE_VM_REGION'] %>"
+    rs.public_key_path    = "~/.ssh/id_rsa.pub"
+    rs.server_name        = "<%= ENV['HOSTNAME'] %>"
+    override.ssh.username = 'root'
+  end
 
   config.vm.provider :digital_ocean do |provider|
     provider.token = "<%= ENV['DIGITAL_OCEAN_TOKEN'] %>"
@@ -22,7 +33,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     provider.size = "<%= ENV['SIZE'] %>"
   end
 
-  # sets the name of the droplet
+  # sets the name of the droplet/server
   config.vm.define "<%= ENV['HOSTNAME'] %>" do |t|
   end
 
