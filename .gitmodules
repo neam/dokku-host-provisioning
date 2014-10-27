@@ -20,3 +20,9 @@
 [submodule "vendor/dokku-plugins/nginx-vhosts-custom-configuration"]
 	path = vendor/dokku-plugins/nginx-vhosts-custom-configuration
 	url = https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git
+[submodule "vendor/dokku-plugins/deployment-keys"]
+	path = vendor/dokku-plugins/deployment-keys
+	url = https://github.com/cedricziel/dokku-deployment-keys.git
+[submodule "vendor/dokku-plugins/hostkeys"]
+	path = vendor/dokku-plugins/hostkeys
+	url = https://github.com/cedricziel/dokku-hostkeys-plugin.git

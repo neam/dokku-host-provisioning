@@ -25,6 +25,7 @@ Provisions:
 * mariadb
 * nginx-vhosts-custom-configuration
 * user-env-compile
+* deployment-keys & hostkeys
 
 ## Dokku version
 
