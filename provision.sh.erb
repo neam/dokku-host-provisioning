@@ -81,9 +81,9 @@ if [ "$installed_buildstep_version" != "<%= ENV['BUILDSTEP_REVISION'] %>" ]; the
 fi
 
 # skip GUI install - install by script
+echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
+echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
 if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
-    echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
-    echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
     cat /root/.ssh/authorized_keys | head -n 1 | sshcommand acl-add dokku admin
     rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start
     rm /etc/init/dokku-installer.conf && stop dokku-installer
