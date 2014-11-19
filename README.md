@@ -55,7 +55,7 @@ These buildpacks are known to work with the provisioned Dokku host:
 
 Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and needs to be updated before working.
 
-Notably, the default PHP buildpack is currently broken. To use a the above working PHP buildpack in your project repo:
+Notably, the default PHP buildpack is currently broken. To use the working PHP buildpack listed above in your project repo:
 
 ```bash
 echo 'export BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git' > .env
@@ -154,7 +154,7 @@ git submodule update --recursive
 vagrant up --provider=$PROVIDER
 ```
 
-With an already running server:
+Then, when a server is up and running, it needs to be provisioned (this command can also be run on existing deployments to update the deployment):
 
 ```bash
 vagrant provision

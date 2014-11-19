@@ -12,7 +12,7 @@ export BUILDSTEP_REVISION="$(cd $script_path/vendor/buildstep;git rev-parse --ve
 erb ../../Vagrantfile.erb > Vagrantfile
 rm -r shell-scripts-to-include/
 cp -r ../../shell-scripts-to-include/ shell-scripts-to-include/
-rm -r vendor/
+rm -rf vendor/
 cp -r ../../vendor/ vendor/
 
 echo $DOKKU_REVISION > vendor/dokku/REVISION
