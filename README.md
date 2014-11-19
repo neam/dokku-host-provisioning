@@ -136,21 +136,20 @@ Example 2:
 export VHOST=foo.com
 ```
 
-To provision a dokku host:
+To build vagrant configuration for a particular dokku host:
 
 ```bash
 export HOSTNAME=dokku.$VHOST
-cd dokku-host-provisioning/
 mkdir -p build/$HOSTNAME
+git submodule init
+git submodule update --recursive
 cd build/$HOSTNAME
 ../../build-vagrant-config.sh
 ```
 
-First time, run:
+Then, if this is the first run:
 
 ```bash
-git submodule init
-git submodule update --recursive
 vagrant up --provider=$PROVIDER
 ```
 
