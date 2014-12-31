@@ -1,4 +1,4 @@
-Dokku Host Provisioning
+Dokku Host Provisioning - 1.0.0
 -----------------------------
 
 Provide monitorable, debuggable and reliable production and/or staging environments using Dokku.
