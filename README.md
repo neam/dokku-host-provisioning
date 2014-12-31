@@ -57,10 +57,18 @@ Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and need
 
 Notably, the default PHP buildpack is currently broken. To use the working PHP buildpack listed above in your project repo:
 
+1. Set your app to use the Multi-buildpack (which supports version pinning).
+
 ```bash
-echo 'export BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git' > .env
+dokku create <appname>
+dokku config:set <appname> BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
+```
+
+2. Add a `.buildpacks` file that instructs the Multi-buildpack to use the tested version of the above buildpack:
+
+```bash
 echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
-git add .env .buildpacks
+git add .buildpacks
 git commit -m 'Updated PHP buildpack'
 ```
 
