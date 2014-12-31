@@ -3,7 +3,7 @@ Dokku Host Provisioning - 1.0.0
 
 Provide monitorable, debuggable and reliable production and/or staging environments using Dokku.
 
-Uses [Vagrant](http://www.vagrantup.com/) to provisiong a Dokku host that runs a specific version of Dokku, Buildstep, Docker and various plug-ins.
+Uses [Vagrant](http://www.vagrantup.com/) to provision Dokku hosts that runs a specific version of Dokku, Buildstep, Docker and various plug-ins.
 
 Allows easy provisioning of multiple Dokku Hosts (one for staging and another for production is a good idea for instance) by generating vagrant configurations separately for each host.
 
