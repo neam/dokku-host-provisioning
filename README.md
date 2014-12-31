@@ -72,6 +72,14 @@ git add .buildpacks
 git commit -m 'Updated PHP buildpack'
 ```
 
+Note: You can use all of the above buildpacks at once, so that composer deps, node, npm and apt dependencies all are installed by using the following as the contents of your `.buildpacks` file:
+
+```
+https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d
+https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d
+https://github.com/neam/appsdeck-buildpack-php#313f71652cd79f6a6a045710ea6ae210a74cc4d2
+```
+
 ## Usage
 
 ### Prepare target destination
