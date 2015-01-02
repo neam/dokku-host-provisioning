@@ -18,10 +18,10 @@ cd provisioning
 echo 'export PS1="${PS1/\\h/\\H}"' >> ~/.bashrc
 echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to replace' >> ~/.bashrc
 
-# install build-essential, htop and mosh
+# install build-essential and htop
 
 apt-get update
-apt-get install -y -q build-essential htop mosh
+apt-get install -y -q build-essential htop curl
 
 # install shell-scripts in /usr/local/bin
 
