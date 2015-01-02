@@ -34,9 +34,11 @@ The version of Dokku provisioned is the latest master branch as of 2014-10-02 wi
 * [Plugin nginx-vhosts includes files in folder nginx.conf.d](https://github.com/progrium/dokku/pull/579)
 * [Added create command](https://github.com/progrium/dokku/pull/599)
 
+This corresponds loosely to Dokku version 0.3.1 in functionality.
+
 ## Buildstep version
 
-The version of Buildstep provisioned is the latest master branch as of 2014-10-02 while as the current master Dokku branch by default installs one from [2014-03-08](https://github.com/progrium/dokku/blob/a69f63c98c8212d393bb17ac5cc2b3960ed7c6f3/Makefile#L6).
+The version of Buildstep provisioned is the latest master branch as of 2014-10-02 while as [the current (last checked 2015-01-02) master Dokku branch by default installs one from 2014-03-08](https://github.com/progrium/dokku/blob/f6b7b62b15250e1e396d2363ef49b8c1784888c3/Makefile#L6).
 
 The most notable difference is that your Dokku apps will be based on Ubuntu 14.04 LTS instead of Ubuntu 12.10 which is no longer supported and thus do not receive security updates.
 
