@@ -169,5 +169,8 @@ docker run -d -p 1080:1080 -p 1025:1025 nisenabe/mailcatcher mailcatcher -f --ve
 echo
 echo "Provisioning complete!"
 echo
+echo "Now running a basic Nginx configuration test to see if there are any issues: (You need to manually correct any errors reported below)"
+echo
+nginx -t
 
 cd /root
