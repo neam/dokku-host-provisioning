@@ -59,14 +59,7 @@ Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and need
 
 Notably, the default PHP buildpack is currently broken. To use the working PHP buildpack listed above in your project repo:
 
-1. Set your app to use the Multi-buildpack (which supports version pinning).
-
-```bash
-dokku create <appname>
-dokku config:set <appname> BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git
-```
-
-2. Add a `.buildpacks` file that instructs the Multi-buildpack to use the tested version of the above buildpack:
+Add a `.buildpacks` file that instructs your app to use the Multi-buildpack (which supports version pinning) and in turn tells the Multi-buildpack to use the tested version of the above buildpack:
 
 ```bash
 echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
@@ -149,6 +142,8 @@ To enter the virtual machine:
 vagrant ssh
 ```
 
+Now add deploy/push-access for yourself and set the default vhost in order to verify that your dokku host works as it should.
+
 ## Adding deploy/push-access to a developer
 
 From a machine that has root-access to the dokku-host:
@@ -159,6 +154,8 @@ export PUBLIC_KEY=~/.ssh/id_rsa.pub
 export DEVELOPER=john
 cat $PUBLIC_KEY | ssh root@$DOKKU_HOST "sudo sshcommand acl-add dokku $DEVELOPER"
 ```
+
+This command is successful if only a ssh key fingerprint and no error messages show up.
 
 ## Setting the default vhost
 
@@ -173,6 +170,9 @@ git flow init --defaults
 echo "This dokku-deployment does not exist" > index.php
 git add index.php
 git commit -m "Added index page"
+echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
+git add .buildpacks
+git commit -m 'Updated PHP buildpack'
 export APPNAME=00-default
 git push dokku@$HOSTNAME:$APPNAME develop:master
 ```
@@ -198,6 +198,28 @@ ssh -T git@bitbucket.org
 ```
 
 (Details why this is necessary can be found in [this comment](https://github.com/progrium/dokku/issues/644#issuecomment-57082992))
+
+## Troubleshooting
+
+### The default Nginx welcome page is showing instead of my deployed apps
+
+This is usually due to some nginx configuration issue. Login to your server and run `nginx -t` to see potential issues.
+
+### My submodules are not working
+
+Did you follow the instructions "Supporting apps that have submodules that reference private repositories" above? If yes and there are still issues, see "Report a problem" below.
+
+### Report a problem
+
+If you suspect a bug in this project, report it on https://github.com/neam/dokku-host-provisioning/issues.
+
+If you suspect a bug in general when using dokku, report the issue at https://github.com/progrium/dokku/issues, be sure to include relevant debugging information, for instance:
+
+```
+After installing and configuring a new Dokku host, I noticed that ___________ was not working properly.
+I tried troubleshooting it by _________, and _________, but I suspect that this is a bug with Dokku.
+I installed Dokku and relevant plugins by running the provisioning scripts found on https://github.com/neam/dokku-host-provisioning (v1.0.0)
+```
 
 ## Shell scripts
 
