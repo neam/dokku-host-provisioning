@@ -18,6 +18,10 @@ Provisions:
 * Swap
 * A set of helper shell scripts (read below under "Shell Scripts")
 
+Requirements:
+
+A Ubuntu 14.04 LTS server that you have root access to via SSH. (May work with later versions or recent Debian 8+ as well, but we have only tested it with Ubuntu 14.04)
+
 ## Dokku Plugins
 
 * custom-domains
