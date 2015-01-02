@@ -203,7 +203,13 @@ ssh -T git@bitbucket.org
 
 ### The default Nginx welcome page is showing instead of my deployed apps
 
-This is usually due to some nginx configuration issue. Login to your server and run `nginx -t` to see potential issues.
+You might need to remove the default Nginx page installed by the Nginx package / your distribution. For instance:
+
+```bash
+rm /etc/nginx/sites-enabled/default
+```
+
+Then try pushing/deploying again. If it still doesn't work, there may be some nginx configuration issue. Login to your server and run `nginx -t` to see potential issues.
 
 ### My submodules are not working
 
