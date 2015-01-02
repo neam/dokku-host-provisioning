@@ -84,58 +84,24 @@ https://github.com/neam/appsdeck-buildpack-php#313f71652cd79f6a6a045710ea6ae210a
 
 ## Usage
 
-### Prepare target destination
+The general workflow:
 
-#### A new or existing Digital Ocean droplet
+1. Set configuration via environment variables in the shell
+2. Generate a configuration for a specific server
+3. Provision the server
 
-You need to have the vagrant digital ocean plugin installed:
+Repeat steps 2 and 3 for every dokku host you wish to provision.
 
-```bash
-vagrant plugin install vagrant-digitalocean
-```
+Anytime you want to change the configuration, updated libraries or similar, you run the steps again.
 
-Set configuration specific to Digital Ocean:
+### Provisioning a Dokku Host
 
-```bash
-export DIGITAL_OCEAN_TOKEN="replaceme"
-export DIGITAL_OCEAN_REGION="ams2"
-export SIZE=8GB
-export PROVIDER=digital_ocean
-```
+First, make sure you have key-based SSH authentication set-up against your target server.
 
-Note: If the droplet already exists, `vagrant up` will link to the existing droplet and let you provision that. Note that it will not resize the droplet to the requested size - that was to be done manually.
-
-#### A new Rackspace Cloud Server
-
-You need to have the vagrant rackspace plugin installed:
-
-```bash
-vagrant plugin install vagrant-rackspace
-```
-
-Set configuration specific to Rackspace:
-
-```bash
-export RACKSPACE_USERNAME="replaceme"
-export RACKSPACE_API_KEY="replaceme"
-export RACKSPACE_VM_REGION="lon"
-export SIZE='2 GB Performance'
-export PROVIDER=rackspace
-```
-
-Note: There is currently no way to link to an existing rackspace server - `vagrant up` will create a new server on Rackspace. To connect to an existing server, use the "" instructions below.
-
-#### Any existing server accessible using SSH
+Some general configuration variables are necessary for the configurations before provisioning:
 
 ```bash
 export PROVIDER=managed
-```
-
-### Deploying a Dokku Host
-
-Some general configuration variables are necessary for the configurations before provisioning the instances:
-
-```bash
 export PAPERTRAIL_PORT="12345"
 export NEW_RELIC_LICENSE_KEY="replaceme"
 ```
@@ -182,11 +148,6 @@ To enter the virtual machine:
 ```bash
 vagrant ssh
 ```
-
-### Deploying a Dokku Host from scratch elsewhere
-
-The vagrant configuration currently includes support deploying from scratch for the Digital Ocean and Rackspace providers only. For any other deployment target you may use the `managed` provider in order to provision any existing host accessible by SSH.
-Consult the Vagrant documentation on how to deplor from scratch using other providers. Any provider that works with Vagrant should work with these configurations since we don't use any provider-specific features.
 
 ## Adding deploy/push-access to a developer
 
