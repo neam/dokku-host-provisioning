@@ -1,0 +1,28 @@
+[submodule "vendor/dokku"]
+	path = vendor/dokku
+	url = https://github.com/neam/dokku.git
+	branch = awaiting-prs
+[submodule "vendor/buildstep"]
+	path = vendor/buildstep
+	url = https://github.com/progrium/buildstep.git
+[submodule "vendor/dokku-plugins/docker-options"]
+	path = vendor/dokku-plugins/docker-options
+	url = https://github.com/dyson/dokku-docker-options.git
+[submodule "vendor/dokku-plugins/user-env-compile"]
+	path = vendor/dokku-plugins/user-env-compile
+	url = https://github.com/musicglue/dokku-user-env-compile.git
+[submodule "vendor/dokku-plugins/mariadb"]
+	path = vendor/dokku-plugins/mariadb
+	url = https://github.com/motin/dokku-md-plugin.git
+[submodule "vendor/dokku-plugins/custom-domains"]
+	path = vendor/dokku-plugins/custom-domains
+	url = https://github.com/neam/dokku-custom-domains.git
+[submodule "vendor/dokku-plugins/nginx-vhosts-custom-configuration"]
+	path = vendor/dokku-plugins/nginx-vhosts-custom-configuration
+	url = https://github.com/neam/dokku-nginx-vhosts-custom-configuration.git
+[submodule "vendor/dokku-plugins/deployment-keys"]
+	path = vendor/dokku-plugins/deployment-keys
+	url = https://github.com/cedricziel/dokku-deployment-keys.git
+[submodule "vendor/dokku-plugins/hostkeys"]
+	path = vendor/dokku-plugins/hostkeys
+	url = https://github.com/cedricziel/dokku-hostkeys-plugin.git

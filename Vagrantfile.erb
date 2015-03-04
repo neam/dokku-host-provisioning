@@ -1,0 +1,48 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.box = "tknerr/managed-server-dummy"
+
+  config.ssh.private_key_path = "~/.ssh/id_rsa"
+
+  # this allows the vagrant box to use the private keys on the host computer
+  config.ssh.forward_agent = true
+
+  config.vm.provider :rackspace do |rs, override|
+    rs.username           = "<%= ENV['RACKSPACE_USERNAME'] %>"
+    rs.api_key            = "<%= ENV['RACKSPACE_API_KEY'] %>"
+    rs.flavor             = /<%= ENV['SIZE'] %>/
+    rs.image              = /Trusty/
+    rs.rackspace_region   = "<%= ENV['RACKSPACE_VM_REGION'] %>"
+    rs.public_key_path    = "~/.ssh/id_rsa.pub"
+    rs.server_name        = "<%= ENV['HOSTNAME'] %>"
+    override.ssh.username = 'root'
+  end
+
+  config.vm.provider :digital_ocean do |provider|
+    provider.token = "<%= ENV['DIGITAL_OCEAN_TOKEN'] %>"
+    provider.image = "Dokku v0.2.3 on Ubuntu 14.04"
+    provider.private_networking = true
+    provider.backups_enabled = true
+    provider.region = "<%= ENV['DIGITAL_OCEAN_REGION'] %>"
+    provider.size = "<%= ENV['SIZE'] %>"
+  end
+
+  config.vm.provider :managed do |managed, override|
+    managed.server = "<%= ENV['HOSTNAME'] %>"
+    override.ssh.username = "root"
+  end
+
+  # sets the name of the droplet/server
+  config.vm.define "<%= ENV['HOSTNAME'] %>" do |t|
+  end
+
+  # Set up provisioning
+  config.vm.provision "shell", :path => "provision.sh"
+
+end

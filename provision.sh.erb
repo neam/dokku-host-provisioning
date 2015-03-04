@@ -1,0 +1,176 @@
+#!/bin/bash
+
+set -x
+
+# fail on any error
+set -o errexit
+
+cd /root
+
+# in order to prevent accidental overwrites of /root contents, we cd into our own directory where we perform the provisioning
+
+if [ ! -d provisioning ]; then
+    mkdir provisioning
+fi
+cd provisioning
+
+# make the bash prompt show the fqdn of the current host in order to prevent confusion of where commands are run
+echo 'export PS1="${PS1/\\h/\\H}"' >> ~/.bashrc
+echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to replace' >> ~/.bashrc
+
+# install build-essential and htop
+
+apt-get update
+apt-get install -y -q build-essential htop curl
+
+# install shell-scripts in /usr/local/bin
+
+cp /vagrant/shell-scripts-to-include/*.sh /usr/local/bin/
+
+# function definitions
+
+install_dokku() {
+    if [ -d /root/dokku/ ]; then
+        rm -r /root/dokku/
+    fi
+    cp -r /vagrant/vendor/dokku /root/dokku
+    cd /root/dokku/
+    DOCKER_VERSION=<%= ENV['DOCKER_VERSION'] %> make install
+    service docker restart
+    sleep 3
+}
+
+install_buildstep() {
+    if [ -d /root/buildstep ]; then
+        rm -r /root/buildstep
+    fi
+    cp -r /vagrant/vendor/buildstep /root/buildstep
+    cd /root/buildstep
+    sudo make build
+}
+
+# install dokku to a pinned down revision of master branch and docker that we have tested
+
+if [ ! -f "/root/dokku/REVISION" ]; then
+    install_dokku
+fi
+
+installed_docker_version="$(dpkg-query -S "$(which docker)" | awk '{ print $1 }' | sed 's/lxc-docker-//g' | sed 's/://g')"
+installed_dokku_revision="$(cat /root/dokku/REVISION)"
+
+if [ "$installed_docker_version" != "<%= ENV['DOCKER_VERSION'] %>" ] || [ "$installed_dokku_revision" != "<%= ENV['DOKKU_REVISION'] %>" ]; then
+
+    echo "Warning: Upgrading Dokku and Docker! This may lead to unexpected consequences regarding already running containers"
+    install_dokku
+
+fi
+
+# install buildstep to a pinned down version of buildstep that we have tested
+
+if [ ! -f "/root/buildstep/REVISION" ]; then
+    install_buildstep
+fi
+
+installed_buildstep_version="$(cat /root/buildstep/REVISION)"
+
+if [ "$installed_buildstep_version" != "<%= ENV['BUILDSTEP_REVISION'] %>" ]; then
+
+    echo "Warning: Upgrading Buildstep! This will affect already deployed dokku apps as soon as they are rebuilt/updated"
+    install_buildstep
+
+fi
+
+# skip GUI install - install by script
+echo "<%= ENV['HOSTNAME'] %>" > /home/dokku/HOSTNAME
+echo "<%= ENV['VHOST'] %>" > /home/dokku/VHOST
+if [ -f "/etc/nginx/conf.d/dokku-installer.conf" ]; then
+    cat /root/.ssh/authorized_keys | head -n 1 | sshcommand acl-add dokku admin
+    rm /etc/nginx/conf.d/dokku-installer.conf && /etc/init.d/nginx stop && /etc/init.d/nginx start
+    rm /etc/init/dokku-installer.conf && stop dokku-installer
+fi
+
+# remove existing custom plugins
+
+cd /var/lib/dokku/plugins/
+shopt -s extglob
+set +o errexit
+rm -rv !(dokku-plugins|nginx-vhosts|00_dokku-standard|backup|checks|config|git|WARNING)
+set -o errexit
+
+# install our custom dokku plugins
+
+cp -r /vagrant/vendor/dokku-plugins/* /var/lib/dokku/plugins/
+dokku plugins-install
+
+# update nginx.conf to support longer than 46 character hostnames (default value 64 which equals 46 chars)
+
+sed -i 's/server_names_hash_bucket_size 64;/server_names_hash_bucket_size 128;/' /etc/nginx/nginx.conf
+cat /etc/nginx/nginx.conf | grep server
+/etc/init.d/nginx restart
+
+# add a dokkurc file to easily turn on and off debug mode (https://github.com/progrium/dokku/wiki/Troubleshooting)
+
+echo '#export DOKKU_TRACE=1' > /home/dokku/dokkurc
+
+# newrelic
+
+wget -O - http://download.newrelic.com/548C16BF.gpg | sudo apt-key add -
+sudo sh -c 'echo "deb http://apt.newrelic.com/debian/ newrelic non-free" > /etc/apt/sources.list.d/newrelic.list'
+sudo apt-get update
+apt-get install -y -q newrelic-sysmond
+nrsysmond-config --set license_key=<%= ENV['NEW_RELIC_LICENSE_KEY'] %>
+nrsysmond-config --set loglevel=warning
+nrsysmond-config --set loglevel=warning
+/etc/init.d/newrelic-sysmond start
+
+# add extra swap to make dokku more stable in oom situations (https://github.com/dotcloud/docker/issues/1555)
+
+if [ ! -f "/var/swap.1" ]; then
+    sudo /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=4096
+    sudo /sbin/mkswap /var/swap.1
+    sudo /sbin/swapon /var/swap.1
+    echo '/var/swap.1 swap swap defaults 0 0' > /etc/fstab
+fi
+
+# papertrail for the dokku rsyslog and vhost proxy
+
+export PAPERTRAIL_PORT=<%= ENV['PAPERTRAIL_PORT'] %>
+apt-get install -y -q ruby1.9.1-dev build-essential
+gem install remote_syslog
+export HOSTNAME=`hostname`
+echo "\$LocalHostName $HOSTNAME" > /etc/rsyslog.d/00-fixed-hostname.conf
+echo "*.*          @logs.papertrailapp.com:$PAPERTRAIL_PORT" > /etc/rsyslog.d/999-papertrail.conf
+service rsyslog restart
+killall remote_syslog || true
+remote_syslog -p $PAPERTRAIL_PORT --hostname $HOSTNAME -d logs.papertrailapp.com /var/log/nginx/access.log /var/log/nginx/error.log /var/log/newrelic/nrsysmond.log
+
+# nsenter
+
+if [ ! -f /usr/local/bin/nsenter ]; then
+    cd /tmp
+    curl https://www.kernel.org/pub/linux/utils/util-linux/v2.24/util-linux-2.24.tar.gz \
+         | tar -zxf-
+    cd util-linux-2.24
+    ./configure --without-ncurses
+    make nsenter
+    cp nsenter /usr/local/bin/
+fi
+
+# install and start mailcatcher on the dokku instance
+
+docker pull nisenabe/mailcatcher
+set +o errexit
+docker ps -a | grep 'nisenabe/mailcatcher' | awk '{ print $1 }' | xargs docker rm -f
+set -o errexit
+docker run -d -p 1080:1080 -p 1025:1025 nisenabe/mailcatcher mailcatcher -f --verbose --ip 0.0.0.0 --smtp-port 1025 --http-port 1080
+
+# done
+
+echo
+echo "Provisioning complete!"
+echo
+echo "Now running a basic Nginx configuration test to see if there are any issues: (You need to manually correct any errors reported below)"
+echo
+nginx -t
+
+cd /root
