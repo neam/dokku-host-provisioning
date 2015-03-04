@@ -1,9 +1,9 @@
-Dokku Host Provisioning
+Dokku Host Provisioning - 1.0.0
 -----------------------------
 
 Provide monitorable, debuggable and reliable production and/or staging environments using Dokku.
 
-Uses [Vagrant](http://www.vagrantup.com/) to provisiong a Dokku host that runs a specific version of Dokku, Buildstep, Docker and various plug-ins.
+Uses [Vagrant](http://www.vagrantup.com/) to provision Dokku hosts that runs a specific version of Dokku, Buildstep, Docker and various plug-ins.
 
 Allows easy provisioning of multiple Dokku Hosts (one for staging and another for production is a good idea for instance) by generating vagrant configurations separately for each host.
 
@@ -17,6 +17,10 @@ Provisions:
 * htop and mosh
 * Swap
 * A set of helper shell scripts (read below under "Shell Scripts")
+
+Requirements:
+
+A Ubuntu 14.04 LTS server that you have root access to via SSH. (May work with later versions or recent Debian 8+ as well, but we have only tested it with Ubuntu 14.04)
 
 ## Dokku Plugins
 
@@ -34,9 +38,11 @@ The version of Dokku provisioned is the latest master branch as of 2014-10-02 wi
 * [Plugin nginx-vhosts includes files in folder nginx.conf.d](https://github.com/progrium/dokku/pull/579)
 * [Added create command](https://github.com/progrium/dokku/pull/599)
 
+This corresponds loosely to Dokku version 0.3.1 in functionality.
+
 ## Buildstep version
 
-The version of Buildstep provisioned is the latest master branch as of 2014-10-02 while as the current master Dokku branch by default installs one from [2014-03-08](https://github.com/progrium/dokku/blob/a69f63c98c8212d393bb17ac5cc2b3960ed7c6f3/Makefile#L6).
+The version of Buildstep provisioned is the latest master branch as of 2014-10-02 while as [the current (last checked 2015-01-02) master Dokku branch by default installs one from 2014-03-08](https://github.com/progrium/dokku/blob/f6b7b62b15250e1e396d2363ef49b8c1784888c3/Makefile#L6).
 
 The most notable difference is that your Dokku apps will be based on Ubuntu 14.04 LTS instead of Ubuntu 12.10 which is no longer supported and thus do not receive security updates.
 
@@ -48,76 +54,51 @@ The most notable difference is that your Dokku apps will be based on Ubuntu 14.0
 
 These buildpacks are known to work with the provisioned Dokku host:
 
- * [https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d]()
- * [https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d]()
- * [https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323]()
- * [https://github.com/ddollar/heroku-buildpack-multi.git]()
+ * [https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d](https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d)
+ * [https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d](https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d)
+ * [https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323](https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323)
+ * [https://github.com/ddollar/heroku-buildpack-multi.git](https://github.com/ddollar/heroku-buildpack-multi.git)
 
 Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and needs to be updated before working.
 
 Notably, the default PHP buildpack is currently broken. To use the working PHP buildpack listed above in your project repo:
 
+Add a `.buildpacks` file that instructs your app to use the Multi-buildpack (which supports version pinning) and in turn tells the Multi-buildpack to use the tested version of the above buildpack:
+
 ```bash
-echo 'export BUILDPACK_URL=https://github.com/ddollar/heroku-buildpack-multi.git' > .env
 echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
-git add .env .buildpacks
+git add .buildpacks
 git commit -m 'Updated PHP buildpack'
+```
+
+Note: You can use all of the above buildpacks at once, so that composer deps, node, npm and apt dependencies all are installed by using the following as the contents of your `.buildpacks` file:
+
+```
+https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d
+https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d
+https://github.com/neam/appsdeck-buildpack-php#313f71652cd79f6a6a045710ea6ae210a74cc4d2
 ```
 
 ## Usage
 
-### Prepare target destination
+The general workflow:
 
-#### A new or existing Digital Ocean droplet
+1. Set configuration via environment variables in the shell
+2. Generate a configuration for a specific server
+3. Provision the server
 
-You need to have the vagrant digital ocean plugin installed:
+Repeat steps 2 and 3 for every dokku host you wish to provision.
 
-```bash
-vagrant plugin install vagrant-digitalocean
-```
+Anytime you want to change the configuration, updated libraries or similar, you run the steps again.
 
-Set configuration specific to Digital Ocean:
+### Provisioning a Dokku Host
 
-```bash
-export DIGITAL_OCEAN_TOKEN="replaceme"
-export DIGITAL_OCEAN_REGION="ams2"
-export SIZE=8GB
-export PROVIDER=digital_ocean
-```
+First, make sure you have key-based SSH authentication set-up against your target server.
 
-Note: If the droplet already exists, `vagrant up` will link to the existing droplet and let you provision that. Note that it will not resize the droplet to the requested size - that was to be done manually.
-
-#### A new Rackspace Cloud Server
-
-You need to have the vagrant rackspace plugin installed:
-
-```bash
-vagrant plugin install vagrant-rackspace
-```
-
-Set configuration specific to Rackspace:
-
-```bash
-export RACKSPACE_USERNAME="replaceme"
-export RACKSPACE_API_KEY="replaceme"
-export RACKSPACE_VM_REGION="lon"
-export SIZE='2 GB Performance'
-export PROVIDER=rackspace
-```
-
-Note: There is currently no way to link to an existing rackspace server - `vagrant up` will create a new server on Rackspace. To connect to an existing server, use the "" instructions below.
-
-#### Any existing server accessible using SSH
+Some general configuration variables are necessary for the configurations before provisioning:
 
 ```bash
 export PROVIDER=managed
-```
-
-### Deploying a Dokku Host
-
-Some general configuration variables are necessary for the configurations before provisioning the instances:
-
-```bash
 export PAPERTRAIL_PORT="12345"
 export NEW_RELIC_LICENSE_KEY="replaceme"
 ```
@@ -165,10 +146,7 @@ To enter the virtual machine:
 vagrant ssh
 ```
 
-### Deploying a Dokku Host from scratch elsewhere
-
-The vagrant configuration currently includes support deploying from scratch for the Digital Ocean and Rackspace providers only. For any other deployment target you may use the `managed` provider in order to provision any existing host accessible by SSH.
-Consult the Vagrant documentation on how to deplor from scratch using other providers. Any provider that works with Vagrant should work with these configurations since we don't use any provider-specific features.
+Now add deploy/push-access for yourself and set the default vhost in order to verify that your dokku host works as it should.
 
 ## Adding deploy/push-access to a developer
 
@@ -180,6 +158,8 @@ export PUBLIC_KEY=~/.ssh/id_rsa.pub
 export DEVELOPER=john
 cat $PUBLIC_KEY | ssh root@$DOKKU_HOST "sudo sshcommand acl-add dokku $DEVELOPER"
 ```
+
+This command is successful if only a ssh key fingerprint and no error messages show up.
 
 ## Setting the default vhost
 
@@ -194,6 +174,9 @@ git flow init --defaults
 echo "This dokku-deployment does not exist" > index.php
 git add index.php
 git commit -m "Added index page"
+echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
+git add .buildpacks
+git commit -m 'Updated PHP buildpack'
 export APPNAME=00-default
 git push dokku@$HOSTNAME:$APPNAME develop:master
 ```
@@ -219,6 +202,34 @@ ssh -T git@bitbucket.org
 ```
 
 (Details why this is necessary can be found in [this comment](https://github.com/progrium/dokku/issues/644#issuecomment-57082992))
+
+## Troubleshooting
+
+### The default Nginx welcome page is showing instead of my deployed apps
+
+You might need to remove the default Nginx page installed by the Nginx package / your distribution. For instance:
+
+```bash
+rm /etc/nginx/sites-enabled/default
+```
+
+Then try pushing/deploying again. If it still doesn't work, there may be some nginx configuration issue. Login to your server and run `nginx -t` to see potential issues.
+
+### My submodules are not working
+
+Did you follow the instructions "Supporting apps that have submodules that reference private repositories" above? If yes and there are still issues, see "Report a problem" below.
+
+### Report a problem
+
+If you suspect a bug in this project, report it on https://github.com/neam/dokku-host-provisioning/issues.
+
+If you suspect a bug in general when using dokku, report the issue at https://github.com/progrium/dokku/issues, be sure to include relevant debugging information, for instance:
+
+```
+After installing and configuring a new Dokku host, I noticed that ___________ was not working properly.
+I tried troubleshooting it by _________, and _________, but I suspect that this is a bug with Dokku.
+I installed Dokku and relevant plugins by running the provisioning scripts found on https://github.com/neam/dokku-host-provisioning (v1.0.0)
+```
 
 ## Shell scripts
 
