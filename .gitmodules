@@ -26,3 +26,6 @@
 [submodule "vendor/dokku-plugins/hostkeys"]
 	path = vendor/dokku-plugins/hostkeys
 	url = https://github.com/cedricziel/dokku-hostkeys-plugin.git
+[submodule "vendor/dokku-plugins/dokku-registry"]
+	path = vendor/dokku-plugins/dokku-registry
+	url = git@github.com:agco/dokku-registry.git

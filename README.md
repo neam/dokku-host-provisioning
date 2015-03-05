@@ -1,9 +1,11 @@
-Dokku Host Provisioning - 1.0.0
+Dokku Host Provisioning
 -----------------------------
 
 Provide monitorable, debuggable and reliable production and/or staging environments using Dokku.
 
-Uses [Vagrant](http://www.vagrantup.com/) to provision Dokku hosts that runs a specific version of Dokku, Buildstep, Docker and various plug-ins.
+Provision a Dokku host that runs a specific version of Dokku, Buildstep, Docker and various plug-ins.
+
+Uses [Vagrant](http://www.vagrantup.com/) for rsyncing files and running provisioning scripts on the remote hosts.
 
 Allows easy provisioning of multiple Dokku Hosts (one for staging and another for production is a good idea for instance) by generating vagrant configurations separately for each host.
 
@@ -24,60 +26,24 @@ A Ubuntu 14.04 LTS server that you have root access to via SSH. (May work with l
 
 ## Dokku Plugins
 
-* custom-domains
 * docker-options
 * mariadb
-* nginx-vhosts-custom-configuration
-* user-env-compile
-* deployment-keys & hostkeys
 
 ## Dokku version
 
-The version of Dokku provisioned is the latest master branch as of 2014-10-02 with the following additional patches that have yet to be merged into official dokku:
-
-* [Plugin nginx-vhosts includes files in folder nginx.conf.d](https://github.com/progrium/dokku/pull/579)
-* [Added create command](https://github.com/progrium/dokku/pull/599)
-
-This corresponds loosely to Dokku version 0.3.1 in functionality.
+0.3.16-dev
 
 ## Buildstep version
 
-The version of Buildstep provisioned is the latest master branch as of 2014-10-02 while as [the current (last checked 2015-01-02) master Dokku branch by default installs one from 2014-03-08](https://github.com/progrium/dokku/blob/f6b7b62b15250e1e396d2363ef49b8c1784888c3/Makefile#L6).
-
-The most notable difference is that your Dokku apps will be based on Ubuntu 14.04 LTS instead of Ubuntu 12.10 which is no longer supported and thus do not receive security updates.
+Dokku 0.3.16-dev's default buildstep version.
 
 ## Docker version
 
-1.2.0 is the current version of Docker provisioned.
+1.5.0
 
-## Working buildpacks
+## Working buildpacks/dockerfiles
 
-These buildpacks are known to work with the provisioned Dokku host:
-
- * [https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d](https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d)
- * [https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d](https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d)
- * [https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323](https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323)
- * [https://github.com/ddollar/heroku-buildpack-multi.git](https://github.com/ddollar/heroku-buildpack-multi.git)
-
-Other buildpacks may rely on older versions of Buildstep / Ubuntu 12.10 and needs to be updated before working.
-
-Notably, the default PHP buildpack is currently broken. To use the working PHP buildpack listed above in your project repo:
-
-Add a `.buildpacks` file that instructs your app to use the Multi-buildpack (which supports version pinning) and in turn tells the Multi-buildpack to use the tested version of the above buildpack:
-
-```bash
-echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
-git add .buildpacks
-git commit -m 'Updated PHP buildpack'
-```
-
-Note: You can use all of the above buildpacks at once, so that composer deps, node, npm and apt dependencies all are installed by using the following as the contents of your `.buildpacks` file:
-
-```
-https://github.com/ddollar/heroku-buildpack-apt#7993a88465873f318486a388187764294a6a615d
-https://github.com/heroku/heroku-buildpack-nodejs#d04d0f07fe4f4b4697532877b9730f0d583acd1d
-https://github.com/neam/appsdeck-buildpack-php#313f71652cd79f6a6a045710ea6ae210a74cc4d2
-```
+Any buildpacks or dockerfiles compatible with Dokku 0.3.16-dev.
 
 ## Usage
 
@@ -174,9 +140,6 @@ git flow init --defaults
 echo "This dokku-deployment does not exist" > index.php
 git add index.php
 git commit -m "Added index page"
-echo 'https://github.com/neam/appsdeck-buildpack-php#83b9f6b451c29685cd0185340c2242998e986323' > .buildpacks
-git add .buildpacks
-git commit -m 'Updated PHP buildpack'
 export APPNAME=00-default
 git push dokku@$HOSTNAME:$APPNAME develop:master
 ```

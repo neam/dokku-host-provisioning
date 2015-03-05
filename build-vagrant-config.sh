@@ -5,7 +5,7 @@ set -x
 initial_pwd=$(pwd)
 script_path=`dirname $0`
 
-export DOCKER_VERSION="1.2.0"
+export DOCKER_VERSION="1.5.0"
 export DOKKU_REVISION="$(cd $script_path/vendor/dokku;git rev-parse --verify HEAD)"
 export BUILDSTEP_REVISION="$(cd $script_path/vendor/buildstep;git rev-parse --verify HEAD)"
 

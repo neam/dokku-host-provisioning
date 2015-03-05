@@ -18,10 +18,11 @@ cd provisioning
 echo 'export PS1="${PS1/\\h/\\H}"' >> ~/.bashrc
 echo 'export PS1="${PS1/\\h/\\H}" # yes two times since there are two "\h" to replace' >> ~/.bashrc
 
-# install build-essential and htop
+# install build-essential, htop and mosh
 
 apt-get update
-apt-get install -y -q build-essential htop curl
+apt-get install -y -q build-essential htop mosh curl
+apt-get install -y -q git make curl software-properties-common man-db help2man
 
 # install shell-scripts in /usr/local/bin
 
@@ -94,7 +95,7 @@ fi
 cd /var/lib/dokku/plugins/
 shopt -s extglob
 set +o errexit
-rm -rv !(dokku-plugins|nginx-vhosts|00_dokku-standard|backup|checks|config|git|WARNING)
+rm -rv !(00_dokku-standard|apps|backup|build-env|checks|common|config|domains|git|nginx-vhosts|ps|shell|WARNING)
 set -o errexit
 
 # install our custom dokku plugins
